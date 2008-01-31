@@ -1,0 +1,22 @@
+PermanentRecords
+================
+
+This plugin prevents any of your records from being destroyed casually.
+Any model with a deleted_at datetime column will have that column set rather than being deleted.
+
+Usage
+=======
+
+User.find(3).destroy          # sets the 'deleted_at' attribute to Time.now and returns a frozen record
+User.find(3).destroy(:force)  # executes the real destroy method, the record will be removed from the database
+User.delete_all               # bye bye everything
+
+There are also two named scopes provided for easily searching deleted and not deleted records:
+
+User.send :with_deleted { User.find(:all) }     # only returns deleted records.
+User.send :with_not_deleted { User.find(:all) } # you guessed it.
+
+These are named so as to work smoothly with other scoping plugins like scope_out.
+
+
+Copyright (c) 2008 Jack Danger Canty of adPickles Inc., released under the MIT license

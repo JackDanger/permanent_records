@@ -50,20 +50,24 @@ module PermanentRecords
     end
     
     def revive
+      set_deleted_at nil
+    end
+    
+    def set_deleted_at(value)
       return self unless is_permanent?
       record = self.class.find(id)
-      record.update_attribute(:deleted_at, nil)
-      record
+      record.update_attribute(:deleted_at, value)
+      @attributes, @attributes_cache = record.attributes, record.attributes
+      self
     end
     
     def destroy_with_permanent_record(force = nil)
-      if :force == force || !is_permanent?
-        destroy_without_permanent_record
-      else
-        update_attribute(:deleted_at, Time.now)
+      return destroy_without_permanent_record if :force == force || !is_permanent?
+      unless deleted?
+        set_deleted_at Time.now
         freeze
-        self
       end
+      self
     end
   end
 end

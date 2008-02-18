@@ -19,6 +19,11 @@ class PermanentRecordsTest < Test::Unit::TestCase
   end
   
   def test_destroy_should_return_the_record
+    muskrat = @active
+    assert_equal muskrat, muskrat.destroy
+  end
+  
+  def test_revive_should_return_the_record
     muskrat = @deleted
     assert_equal muskrat, muskrat.destroy
   end
@@ -61,6 +66,15 @@ class PermanentRecordsTest < Test::Unit::TestCase
   
   def test_deleted_returns_true_for_deleted_records
     assert @deleted.deleted?
+  end
+  
+  def test_destroy_returns_record_with_modified_attributes
+    assert @active.destroy.deleted?
+  end
+  
+  def test_revive_and_destroy_should_be_chainable
+    assert @active.destroy.revive.destroy.destroy.revive.revive.destroy.deleted?
+    assert !@deleted.destroy.revive.revive.destroy.destroy.revive.deleted?
   end
   
   def test_with_deleted_limits_scope_to_deleted_records

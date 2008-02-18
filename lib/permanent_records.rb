@@ -1,4 +1,3 @@
-require 'active_record'
 module PermanentRecords
 
   def self.included(base)
@@ -51,7 +50,7 @@ module PermanentRecords
     end
     
     def revive
-      return self if is_permanent?
+      return self unless is_permanent?
       record = self.class.find(id)
       record.update_attribute(:deleted_at, nil)
       record

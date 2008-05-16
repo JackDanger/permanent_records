@@ -64,7 +64,9 @@ module PermanentRecords
     def destroy_with_permanent_record(force = nil)
       return destroy_without_permanent_record if :force == force || !is_permanent?
       unless deleted?
+        callback(:before_destroy)        
         set_deleted_at Time.now
+        callback(:after_destroy)        
         freeze
       end
       self

@@ -1,7 +1,3 @@
-
-require File.expand_path(File.dirname(__FILE__) + "/muskrat")
-require File.expand_path(File.dirname(__FILE__) + "/kitty")
-
 ActiveRecord::Schema.define(:version => 1) do
   
   create_table :muskrats do |t|
@@ -12,5 +8,15 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :kitties do |t|
     t.column :name,   :string
   end
+
+  create_table :holes do |t|
+    t.integer :number
+    t.datetime :deleted_at
+  end
   
+  create_table :moles do |t|
+    t.string :name
+    t.references :hole
+  end
+
 end

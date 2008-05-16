@@ -1,6 +1,9 @@
 require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
-require File.expand_path(File.dirname(__FILE__) + "/muskrat")
+
+%w(hole mole muskrat kitty).each do |a|
+  require File.expand_path(File.dirname(__FILE__) + "/" + a)
+end
 
 class PermanentRecordsTest < Test::Unit::TestCase
   
@@ -12,6 +15,8 @@ class PermanentRecordsTest < Test::Unit::TestCase
     @the_girl   = Muskrat.create!(:name => 'Dot')
     Kitty.delete_all
     @kitty = Kitty.create!(:name => 'Meow Meow')
+    @hole = Hole.create(:number => 14)
+    @mole = @hole.moles.create(:name => "Grabowski")
   end
   
   def teardown
@@ -91,5 +96,12 @@ class PermanentRecordsTest < Test::Unit::TestCase
   
   def test_models_without_a_deleted_at_column_should_destroy_as_normal
     assert_raises(ActiveRecord::RecordNotFound) {@kitty.destroy.reload}
+  end
+  
+  def test_dependent_non_permanent_records_should_be_destroyed
+    assert @hole.is_permanent?
+    assert_difference "Mole.count", -1 do
+      @hole.destroy
+    end
   end
 end

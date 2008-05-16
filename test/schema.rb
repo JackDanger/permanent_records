@@ -3,6 +3,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :muskrats do |t|
     t.column :name,         :string
     t.column :deleted_at,   :datetime
+    t.references :hole
   end
   
   create_table :kitties do |t|

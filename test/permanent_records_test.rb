@@ -16,6 +16,7 @@ class PermanentRecordsTest < Test::Unit::TestCase
     Kitty.delete_all
     @kitty = Kitty.create!(:name => 'Meow Meow')
     @hole = Hole.create(:number => 14)
+    @mole = @hole.muskrats.create(:name => "Steady Rat")
     @mole = @hole.moles.create(:name => "Grabowski")
   end
   
@@ -100,8 +101,18 @@ class PermanentRecordsTest < Test::Unit::TestCase
   
   def test_dependent_non_permanent_records_should_be_destroyed
     assert @hole.is_permanent?
+    assert !@hole.moles.first.is_permanent?
     assert_difference "Mole.count", -1 do
       @hole.destroy
     end
+  end
+  
+  def test_dependent_permanent_records_should_be_destroyed
+    assert @hole.is_permanent?
+    assert @hole.muskrats.first.is_permanent?
+    assert_no_difference "Muskrat.count" do
+      @hole.destroy
+    end
+    assert @hole.muskrats.first.deleted?
   end
 end

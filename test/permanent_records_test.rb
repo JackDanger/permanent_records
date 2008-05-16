@@ -107,7 +107,7 @@ class PermanentRecordsTest < Test::Unit::TestCase
     end
   end
   
-  def test_dependent_permanent_records_should_be_destroyed
+  def test_dependent_permanent_records_should_be_marked_as_deleted
     assert @hole.is_permanent?
     assert @hole.muskrats.first.is_permanent?
     assert_no_difference "Muskrat.count" do

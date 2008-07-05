@@ -42,10 +42,6 @@ class PermanentRecordsTest < Test::Unit::TestCase
     assert Muskrat.find(@active.destroy.id).deleted_at
   end
   
-  def test_destroy_should_freeze_record
-    assert @active.destroy.frozen?
-  end
-  
   def test_destroy_should_not_really_remove_the_record
     assert Muskrat.find(@active.destroy.id)
   end
@@ -84,15 +80,11 @@ class PermanentRecordsTest < Test::Unit::TestCase
   end
   
   def test_with_deleted_limits_scope_to_deleted_records
-    Muskrat.send :with_deleted do
-      assert Muskrat.find(:all).all?(&:deleted?)
-    end
+    assert Muskrat.deleted.all?(&:deleted?)
   end
   
   def test_with_not_deleted_limits_scope_to_not_deleted_records
-    Muskrat.send :with_not_deleted do
-      assert !Muskrat.find(:all).any?(&:deleted?)
-    end
+    assert !Muskrat.not_deleted.any?(&:deleted?)
   end
   
   def test_models_without_a_deleted_at_column_should_destroy_as_normal

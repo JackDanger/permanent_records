@@ -1,22 +1,12 @@
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
+# -*- ruby -*-
 
-desc 'Default: run unit tests.'
-task :default => :test
+require 'rubygems'
+require 'hoe'
+require File.dirname(__FILE__) + '/lib/permanent_records'
 
-desc 'Test the permanent_records plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
+Hoe.new('permanent_records', PermanentRecords::VERSION) do |p|
+  p.summary = "Soft-delete your ActiveRecord data."
+  p.developer('Jack Danger Canty', 'gems@6brand.com')
 end
 
-desc 'Generate documentation for the permanent_records plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'PermanentRecords'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
+# vim: syntax=Ruby

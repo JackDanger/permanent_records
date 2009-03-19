@@ -1,5 +1,5 @@
 module PermanentRecords
-
+  VERSION = '1.0.1'
   def self.included(base)
     if base.respond_to?(:named_scope)
       base.named_scope :deleted, :conditions => {:deleted_at => true}

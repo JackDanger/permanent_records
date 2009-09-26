@@ -1,9 +1,9 @@
 sqlite:
   :adapter: sqlite
-  :dbfile: plugin.sqlite.db
+  :database: plugin.sqlite.db
 sqlite3:
   :adapter: sqlite3
-  :dbfile: ":memory:"
+  :database: ":memory:"
 postgresql:
   :adapter: postgresql
   :username: postgres

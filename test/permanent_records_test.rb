@@ -1,11 +1,10 @@
-require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 %w(hole mole muskrat kitty).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
-class PermanentRecordsTest < Test::Unit::TestCase
+class PermanentRecordsTest < ActiveSupport::TestCase
   
   def setup
     super

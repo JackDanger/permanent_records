@@ -78,6 +78,16 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert !@deleted.destroy.revive.revive.destroy.destroy.revive.deleted?
   end
   
+  def test_with_counting_on_deleted_limits_scope_to_count_deleted_records
+    assert_equal Muskrat.deleted.length,
+                 Muskrat.deleted.count
+  end
+
+  def test_with_counting_on_not_deleted_limits_scope_to_count_not_deleted_records
+    assert_equal Muskrat.not_deleted.length,
+                 Muskrat.not_deleted.count
+  end
+
   def test_with_deleted_limits_scope_to_deleted_records
     assert Muskrat.deleted.all?(&:deleted?)
   end

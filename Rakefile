@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "permanent_records"
     gem.summary = %Q{Soft-delete your ActiveRecord records}
-    gem.description = %Q{Rather than actually deleting data this just sets Record#deleted_at.  Provides helpful scopes.}
+    gem.description = %Q{Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.}
     gem.email = "gems@6brand.com"
     gem.homepage = "http://github.com/JackDanger/permanent_records"
     gem.authors = ["Jack Danger Canty"]

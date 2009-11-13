@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{permanent_records}
-  s.version = "1.0.3"
+  s.version = "1.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty"]
-  s.date = %q{2009-09-27}
+  s.date = %q{2009-11-13}
   s.description = %q{Rather than actually deleting data this just sets Record#deleted_at.  Provides helpful scopes.}
   s.email = %q{gems@6brand.com}
   s.extra_rdoc_files = [
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+     ".gitignore",
      "MIT-LICENSE",
      "README",
      "Rakefile",

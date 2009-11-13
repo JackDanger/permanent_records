@@ -1,7 +1,7 @@
 module PermanentRecords
   def self.included(base)
     if base.respond_to?(:named_scope)
-      base.named_scope :deleted, :conditions => :deleted_at
+      base.named_scope :deleted, :conditions => 'deleted_at IS NOT NULL'
       base.named_scope :not_deleted, :conditions => { :deleted_at => nil }
     else
       base.extend LegacyScopes

@@ -15,7 +15,8 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     Kitty.delete_all
     @kitty = Kitty.create!(:name => 'Meow Meow')
     @hole = Hole.create(:number => 14)
-    @mole = @hole.muskrats.create(:name => "Steady Rat")
+    @hole.muskrats.create(:name => "Active Muskrat")
+    @hole.muskrats.create(:name => "Deleted Muskrat", :deleted_at => 5.days.ago)
     @mole = @hole.moles.create(:name => "Grabowski")
   end
   
@@ -120,8 +121,16 @@ class PermanentRecordsTest < ActiveSupport::TestCase
   def test_dependent_permanent_records_should_be_revived_when_parent_is_revived
     assert @hole.is_permanent?
     @hole.destroy
-    assert @hole.muskrats.first.deleted?
+    assert @hole.muskrats.find_by_name("Active Muskrat").deleted?
     @hole.revive
-    assert !@hole.muskrats.first.deleted?
+    assert !@hole.muskrats.find_by_name("Active Muskrat").deleted?
+  end
+  
+  def test_old_dependent_permanent_records_should_not_be_revived
+    assert @hole.is_permanent?
+    @hole.destroy
+    assert @hole.muskrats.find_by_name("Deleted Muskrat").deleted?
+    @hole.revive
+    assert @hole.muskrats.find_by_name("Deleted Muskrat").deleted?
   end
 end

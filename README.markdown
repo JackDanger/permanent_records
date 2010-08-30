@@ -2,8 +2,8 @@
 
 [http://github.com/JackDanger/permanent_records/](http://github.com/JackDanger/permanent_records/)
 
-This plugin prevents any of your records from being destroyed casually.
-Any model with a deleted_at datetime column will have that column set rather than being deleted.
+This gem/plugin prevents any of your ActiveRecord data from being destroyed.
+Any model that you've given a "deleted_at" datetime column will have that column set rather than let the record be deleted.
 
 ## Does it make a lot of sense?
 

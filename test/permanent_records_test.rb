@@ -30,7 +30,7 @@ class PermanentRecordsTest < ActiveSupport::TestCase
   
   def test_revive_should_return_the_record
     muskrat = @deleted
-    assert_equal muskrat, muskrat.destroy
+    assert_equal muskrat, muskrat.revive
   end
 
   def test_destroy_should_set_deleted_at_attribute
@@ -115,5 +115,13 @@ class PermanentRecordsTest < ActiveSupport::TestCase
       @hole.destroy
     end
     assert @hole.muskrats.first.deleted?
+  end
+  
+  def test_dependent_permanent_records_should_be_revived_when_parent_is_revived
+    assert @hole.is_permanent?
+    @hole.destroy
+    assert @hole.muskrats.first.deleted?
+    @hole.revive
+    assert !@hole.muskrats.first.deleted?
   end
 end

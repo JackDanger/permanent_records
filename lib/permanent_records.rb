@@ -7,9 +7,15 @@ module PermanentRecords
       base.extend LegacyScopes
     end
     base.send :include, InstanceMethods
-    base.define_callbacks :before_revive, :after_revive
-    base.alias_method_chain :destroy, :permanent_record_force
-    base.alias_method_chain :destroy_without_callbacks, :permanent_record
+    base.instance_eval do
+      define_callbacks :before_revive, :after_revive
+      alias_method_chain :destroy, :permanent_record_force
+      alias_method_chain :destroy_without_callbacks, :permanent_record
+      before_revive :revive_destroyed_dependent_records
+      def is_permanent?
+        columns.detect {|c| 'deleted_at' == c.name}
+      end
+    end
   end
   
   module LegacyScopes
@@ -80,6 +86,28 @@ module PermanentRecords
         set_deleted_at Time.now
       end
       self
+    end
+
+    def revive_destroyed_dependent_records
+      self.class.reflections.select do |name, reflection|
+        'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
+      end.each do |name, reflection|
+
+        send(name).find(:all,
+                        :conditions => [
+                          "#{reflection.quoted_table_name}.deleted_at > ?" +
+                          " AND " +
+                          "#{reflection.quoted_table_name}.deleted_at < ?",
+                          deleted_at - 3.seconds,
+                          deleted_at + 3.seconds
+                        ]
+                      ).each do |dependent|
+          dependent.revive
+        end
+
+        # and update the reflection cache
+        send(name, :reload)
+      end
     end
   end
 end

@@ -1,31 +1,34 @@
-PermanentRecords
-================
+# PermanentRecords
+
+[http://github.com/JackDanger/permanent_records/](http://github.com/JackDanger/permanent_records/)
 
 This plugin prevents any of your records from being destroyed casually.
 Any model with a deleted_at datetime column will have that column set rather than being deleted.
 
-Usage
-=======
+## Does it make a lot of sense?
+
+Yes.
 
     User.find(3).destroy          # sets the 'deleted_at' attribute to Time.now and returns a frozen record
     User.find(3).destroy(:force)  # executes the real destroy method, the record will be removed from the database
+    User.destroy_all              # soft-deletes all User records
     User.delete_all               # bye bye everything (no soft-deleting here)
 
-There are also two named scopes provided for easily searching deleted and not deleted records:
+There are also two scopes provided for easily searching deleted and not deleted records:
 
-    User.send :with_deleted { User.find(:all) }     # only returns deleted records.
-    User.send :with_not_deleted { User.find(:all) } # you guessed it.
+    User.deleted.find(...)        # only returns deleted records.
+    User.not_deleted.find(...)    # only returns non-deleted records.
 
 
-Is Everything Automated?
-=======
+## Is Everything Automated?
+
 
 Yes. You don't have to change ANY of your code to get permanent archiving of all your data with this gem. 
 When you call 'destroy' on any record  (or 'destroy_all' on a class or association) your records will
 all have a deleted_at timestamp set on them.
 
-Can I easily undelete records?
-=======
+
+## Can I easily undelete records?
 
 Yes. All you need to do is call the 'revive' method.
 
@@ -48,4 +51,4 @@ And if you had dependent records that were set to be destroyed along with the pa
 
 Patches welcome, forks celebrated.
 
-Copyright (c) 2010 Jack Danger Canty of Cloops Inc., released under the MIT license
+Copyright (c) 2010 Jack Danger Canty @ [http://jåck.com](http://jåck.com) of Cloops Inc., released under the MIT license

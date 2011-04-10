@@ -4,8 +4,6 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 RAILS_ROOT = File.dirname(__FILE__)
 
-require 'rubygems'
-gem 'test-unit'
 require 'test/unit'
 require 'active_record'
 require 'active_record/fixtures'

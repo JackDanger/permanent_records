@@ -16,9 +16,13 @@ rescue LoadError
 end
 
 require 'rake/testtask'
-task :test do
-  exec "ruby test/permanent_records_test.rb"
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.ruby_opts << '-rubygems'
+  test.pattern = 'test/*_test.rb'
+  test.verbose = true
 end
+task :spec => :test
 
 task :default => :test
 

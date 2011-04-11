@@ -22,6 +22,11 @@ There are also two scopes provided for easily searching deleted and not deleted 
     User.not_deleted.find(...)    # only returns non-deleted records.
 
 
+Note: Your normal finds will, by default, _include_ deleted records. You'll have to manually use the 'not_deleted' scope to avoid this:
+
+    User.find(1)                  # will find record number 1, even if it's deleted
+    User.not_deleted.find(1)      # This is probably what you want, it doesn't find deleted records
+
 ## Is Everything Automated?
 
 

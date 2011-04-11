@@ -1,16 +1,22 @@
 module PermanentRecords
   def self.included(base)
-    if base.respond_to?(:named_scope)
+    # Rails 3
+    if ActiveRecord::VERSION::MAJOR >= 3
+      base.scope :deleted, :conditions => 'deleted_at IS NOT NULL'
+      base.scope :not_deleted, :conditions => { :deleted_at => nil }
+      base.instance_eval { define_model_callbacks :revive }
+    # Rails 2.x.x
+    elsif base.respond_to?(:named_scope)
       base.named_scope :deleted, :conditions => 'deleted_at IS NOT NULL'
       base.named_scope :not_deleted, :conditions => { :deleted_at => nil }
+      base.instance_eval { define_callbacks :before_revive, :after_revive }
+    # Early Rails code
     else
-      base.extend LegacyScopes
+      base.extend EarlyRails
+      base.instance_eval { define_callbacks :before_revive, :after_revive }
     end
     base.send :include, InstanceMethods
     base.instance_eval do
-      define_callbacks :before_revive, :after_revive
-      alias_method_chain :destroy, :permanent_record_force
-      alias_method_chain :destroy_without_callbacks, :permanent_record
       before_revive :revive_destroyed_dependent_records
       def is_permanent?
         columns.detect {|c| 'deleted_at' == c.name}
@@ -18,7 +24,7 @@ module PermanentRecords
     end
   end
   
-  module LegacyScopes
+  module EarlyRails
     def with_deleted
       with_scope :find => {:conditions => "#{quoted_table_name}.deleted_at IS NOT NULL"} do
         yield
@@ -50,7 +56,7 @@ module PermanentRecords
       end
     end
   end
-  
+
   module InstanceMethods
     
     def is_permanent?
@@ -60,11 +66,22 @@ module PermanentRecords
     def deleted?
       deleted_at if is_permanent?
     end
+
+    def destroyed?
+      deleted? || super
+    end
     
     def revive
-      run_callbacks :before_revive
-      set_deleted_at nil
-      run_callbacks :after_revive
+      # Rails 3
+      if ActiveRecord::VERSION::MAJOR >= 3
+        _run_revive_callbacks do
+          set_deleted_at nil
+        end
+      else
+        run_callbacks :before_revive
+        set_deleted_at nil
+        run_callbacks :after_revive
+      end
       self
     end
     
@@ -75,15 +92,21 @@ module PermanentRecords
       @attributes, @attributes_cache = record.attributes, record.attributes
     end
     
-    def destroy_with_permanent_record_force(force = nil)
-      @force_permanent_record_destroy = (:force == force)
-      destroy_without_permanent_record_force
-    end
-    
-    def destroy_without_callbacks_with_permanent_record
-      return destroy_without_callbacks_without_permanent_record if @force_permanent_record_destroy || !is_permanent?
+    def destroy(force = nil)
+      return super() unless is_permanent?
+      return super() if (:force == force)
       unless deleted? || new_record?
         set_deleted_at Time.now
+      end
+      # Rails 3
+      if ActiveRecord::VERSION::MAJOR >= 3
+        _run_destroy_callbacks do
+          save
+        end
+      else
+        run_callbacks :before_destroy
+        save
+        run_callbacks :after_destroy
       end
       self
     end
@@ -111,5 +134,6 @@ module PermanentRecords
     end
   end
 end
+
 ActiveRecord::Base.send :include, PermanentRecords
 

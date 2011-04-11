@@ -5,6 +5,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 RAILS_ROOT = File.dirname(__FILE__)
 
 require 'test/unit'
+gem 'activerecord', '2.3.4'
 require 'active_record'
 require 'active_record/fixtures'
 require "#{File.dirname(__FILE__)}/../init"

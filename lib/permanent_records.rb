@@ -1,5 +1,8 @@
 module PermanentRecords
   def self.included(base)
+
+    base.send :include, InstanceMethods
+
     # Rails 3
     if ActiveRecord::VERSION::MAJOR >= 3
       base.scope :deleted, :conditions => 'deleted_at IS NOT NULL'
@@ -10,12 +13,12 @@ module PermanentRecords
       base.named_scope :deleted, :conditions => 'deleted_at IS NOT NULL'
       base.named_scope :not_deleted, :conditions => { :deleted_at => nil }
       base.instance_eval { define_callbacks :before_revive, :after_revive }
+      base.send :alias_method_chain, :destroy, :permanent_records
     # Early Rails code
     else
       base.extend EarlyRails
       base.instance_eval { define_callbacks :before_revive, :after_revive }
     end
-    base.send :include, InstanceMethods
     base.instance_eval do
       before_revive :revive_destroyed_dependent_records
       def is_permanent?
@@ -91,10 +94,18 @@ module PermanentRecords
       record.update_attribute(:deleted_at, value)
       @attributes, @attributes_cache = record.attributes, record.attributes
     end
-    
+
     def destroy(force = nil)
-      return super() unless is_permanent?
-      return super() if (:force == force)
+      if ActiveRecord::VERSION::MAJOR >= 3
+        return super() unless is_permanent? && (:force != force)
+      end
+      destroy_with_permanent_records force
+    end
+
+    def destroy_with_permanent_records(force = nil)
+      if ActiveRecord::VERSION::MAJOR < 3
+        return destroy_without_permanent_records unless is_permanent? && (:force != force)
+      end
       unless deleted? || new_record?
         set_deleted_at Time.now
       end

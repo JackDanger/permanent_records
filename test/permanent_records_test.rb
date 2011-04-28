@@ -133,4 +133,16 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @hole.revive
     assert @hole.muskrats.find_by_name("Deleted Muskrat").deleted?
   end
+  
+  def ensure_before_destroy_callback_still_works
+    assert_false @hole.saw_about_to_destroy
+    @hole.destroy
+    assert @hole.saw_about_to_destroy
+  end
+  
+  def ensure_after_destroy_callback_still_works
+    assert_false @hole.saw_after_destroy
+    @hole.destroy
+    assert @hole.saw_after_destroy
+  end
 end

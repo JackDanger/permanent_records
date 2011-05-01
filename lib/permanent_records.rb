@@ -126,16 +126,21 @@ module PermanentRecords
       self.class.reflections.select do |name, reflection|
         'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
       end.each do |name, reflection|
-
-        send(name).find(:all,
-                        :conditions => [
-                          "#{reflection.quoted_table_name}.deleted_at > ?" +
-                          " AND " +
-                          "#{reflection.quoted_table_name}.deleted_at < ?",
-                          deleted_at - 3.seconds,
-                          deleted_at + 3.seconds
-                        ]
-                      ).each do |dependent|
+        cardinality = reflection.macro.to_s.gsub('has_', '')
+        if cardinality == 'many'
+          records = send(name).find(:all,
+                          :conditions => [
+                            "#{reflection.quoted_table_name}.deleted_at > ?" +
+                            " AND " +
+                            "#{reflection.quoted_table_name}.deleted_at < ?",
+                            deleted_at - 3.seconds,
+                            deleted_at + 3.seconds
+                          ]
+                        )
+        elsif cardinality == 'one'
+          records = [] << send(name)
+        end
+        records.each do |dependent|
           dependent.revive
         end
 

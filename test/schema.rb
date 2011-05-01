@@ -19,5 +19,11 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string :name
     t.references :hole
   end
+  
+  create_table :locations, :force => true do |t|
+    t.string :name
+    t.references :hole
+    t.datetime :deleted_at
+  end
 
 end

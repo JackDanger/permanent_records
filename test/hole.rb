@@ -3,4 +3,6 @@ class Hole < ActiveRecord::Base
   has_many :muskrats, :dependent => :destroy
   # moles are not permanent
   has_many :moles, :dependent => :destroy
+  
+  has_one :location, :dependent => :destroy
 end

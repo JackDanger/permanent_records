@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-%w(hole mole muskrat kitty).each do |a|
+%w(hole mole muskrat kitty location).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
@@ -17,6 +17,10 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @hole = Hole.create(:number => 14)
     @hole.muskrats.create(:name => "Active Muskrat")
     @hole.muskrats.create(:name => "Deleted Muskrat", :deleted_at => 5.days.ago)
+    Location.delete_all
+    @location = Location.create(:name => "South wall")
+    @hole.location = @location
+    @hole.save!
     @mole = @hole.moles.create(:name => "Grabowski")
   end
   
@@ -109,7 +113,7 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     end
   end
   
-  def test_dependent_permanent_records_should_be_marked_as_deleted
+  def test_dependent_permanent_records_with_has_many_cardinality_should_be_marked_as_deleted
     assert @hole.is_permanent?
     assert @hole.muskrats.first.is_permanent?
     assert_no_difference "Muskrat.count" do
@@ -118,12 +122,30 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert @hole.muskrats.first.deleted?
   end
   
-  def test_dependent_permanent_records_should_be_revived_when_parent_is_revived
+  def test_dependent_permanent_records_with_has_one_cardinality_should_be_marked_as_deleted
+    assert @hole.is_permanent?
+    assert @hole.location.is_permanent?
+    assert_no_difference "Location.count" do
+      @hole.destroy
+    end
+    assert @hole.location.deleted?
+    assert Location.find_by_name("South wall").deleted?
+  end
+  
+  def test_dependent_permanent_records_with_has_many_cardinality_should_be_revived_when_parent_is_revived
     assert @hole.is_permanent?
     @hole.destroy
     assert @hole.muskrats.find_by_name("Active Muskrat").deleted?
     @hole.revive
     assert !@hole.muskrats.find_by_name("Active Muskrat").deleted?
+  end
+  
+  def test_dependent_permanent_records_with_has_one_cardinality_should_be_revived_when_parent_is_revived
+    assert @hole.is_permanent?
+    @hole.destroy
+    assert Location.find_by_name("South wall").deleted?
+    @hole.revive
+    assert !Location.find_by_name("South wall").deleted?
   end
   
   def test_old_dependent_permanent_records_should_not_be_revived

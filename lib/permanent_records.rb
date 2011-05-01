@@ -90,7 +90,7 @@ module PermanentRecords
     
     def set_deleted_at(value)
       return self unless is_permanent?
-      record = self.class.find(id)
+      record = self.class.unscoped.find(id)
       record.update_attribute(:deleted_at, value)
       @attributes, @attributes_cache = record.attributes, record.attributes
     end
@@ -128,7 +128,7 @@ module PermanentRecords
       end.each do |name, reflection|
         cardinality = reflection.macro.to_s.gsub('has_', '')
         if cardinality == 'many'
-          records = send(name).find(:all,
+          records = send(name).unscoped.find(:all,
                           :conditions => [
                             "#{reflection.quoted_table_name}.deleted_at > ?" +
                             " AND " +
@@ -138,7 +138,9 @@ module PermanentRecords
                           ]
                         )
         elsif cardinality == 'one'
-          records = [] << send(name)
+          self.class.unscoped do
+            records = [] << send(name)
+          end
         end
         records.compact.each do |dependent|
           dependent.revive

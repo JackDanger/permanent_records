@@ -6,4 +6,6 @@ class Hole < ActiveRecord::Base
   
   has_one :location, :dependent => :destroy
   has_one :unused_model, :dependent => :destroy
+  has_one :difficulty, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
 end

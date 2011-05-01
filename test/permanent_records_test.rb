@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-%w(hole mole muskrat kitty location unused_model).each do |a|
+%w(hole mole muskrat kitty location comment difficulty unused_model).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
@@ -22,6 +22,18 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @hole.location = @location
     @hole.save!
     @mole = @hole.moles.create(:name => "Grabowski")
+    
+    # test has_one cardinality with model having a default scope
+    Difficulty.unscoped.delete_all
+    @hole_with_difficulty = Hole.create(:number => 16)
+    @hole_with_difficulty.difficulty = Difficulty.create!(:name => 'Hard')
+    @hole_with_difficulty.save!
+    
+    # test has_many cardinality with model having a default scope
+    Comment.unscoped.delete_all
+    @hole_with_comments = Hole.create(:number => 16)
+    @hole_with_comments.comments << Comment.create!(:text => "Beware of the pond.")
+    @hole_with_comments.comments << Comment.create!(:text => "Muskrats live here.")
   end
   
   def teardown
@@ -146,6 +158,30 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert Location.find_by_name("South wall").deleted?
     @hole.revive
     assert !Location.find_by_name("South wall").deleted?
+  end
+  
+  def test_dependent_permanent_records_with_has_one_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
+    assert @hole_with_difficulty.is_permanent?
+    assert_difference("Difficulty.count", -1) do
+      @hole_with_difficulty.destroy
+    end
+    assert_nil Difficulty.find_by_name("Hard")
+    assert Difficulty.unscoped.find_by_name("Hard").deleted?
+    @hole_with_difficulty.revive
+    assert_not_nil Difficulty.find_by_name("Hard")
+    assert !Difficulty.unscoped.find_by_name("Hard").deleted?
+  end
+  
+  def test_dependent_permanent_records_with_has_many_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
+    assert @hole_with_comments.is_permanent?
+    assert_difference("Comment.count", -2) do
+      @hole_with_comments.destroy
+    end
+    assert_nil Comment.find_by_text("Beware of the pond.")
+    assert Comment.unscoped.find_by_text("Beware of the pond.").deleted?
+    @hole_with_comments.revive
+    assert_not_nil Comment.find_by_text("Beware of the pond.")
+    assert !Comment.unscoped.find_by_text("Beware of the pond.").deleted?
   end
   
   def test_inexistent_dependent_models_should_not_cause_errors

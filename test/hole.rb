@@ -5,4 +5,5 @@ class Hole < ActiveRecord::Base
   has_many :moles, :dependent => :destroy
   
   has_one :location, :dependent => :destroy
+  has_one :unused_model, :dependent => :destroy
 end

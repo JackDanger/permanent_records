@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-%w(hole mole muskrat kitty location).each do |a|
+%w(hole mole muskrat kitty location unused_model).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
@@ -146,6 +146,14 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert Location.find_by_name("South wall").deleted?
     @hole.revive
     assert !Location.find_by_name("South wall").deleted?
+  end
+  
+  def test_inexistent_dependent_models_should_not_cause_errors
+    hole_with_unused_model = Hole.create!(:number => 1)
+    hole_with_unused_model.destroy
+    assert_nothing_raised do
+      hole_with_unused_model.revive
+    end
   end
   
   def test_old_dependent_permanent_records_should_not_be_revived

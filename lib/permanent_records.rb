@@ -140,7 +140,7 @@ module PermanentRecords
         elsif cardinality == 'one'
           records = [] << send(name)
         end
-        records.each do |dependent|
+        records.compact.each do |dependent|
           dependent.revive
         end
 

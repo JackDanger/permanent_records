@@ -199,4 +199,17 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @hole.revive
     assert @hole.muskrats.find_by_name("Deleted Muskrat").deleted?
   end
+  
+  def test_validate_records_before_revival
+    duplicate_location = Location.new(@location.attributes)
+    @location.destroy
+    @location.reload
+    duplicate_location.save!
+    assert_equal duplicate_location.name, @location.name
+    assert_no_difference('Location.not_deleted.count') do
+      assert_raise (ActiveRecord::RecordInvalid) do
+        @location.revive
+      end
+    end
+  end
 end

@@ -91,8 +91,19 @@ module PermanentRecords
     def set_deleted_at(value)
       return self unless is_permanent?
       record = self.class.unscoped.find(id)
-      record.update_attribute(:deleted_at, value)
-      @attributes, @attributes_cache = record.attributes, record.attributes
+      record.deleted_at = value
+      begin
+        # we call save! instead of update_attribute so an ActiveRecord::RecordInvalid
+        # error will be raised if the record isn't valid. (This prevents reviving records that
+        # disregard validation constraints,)
+        record.save!
+        @attributes, @attributes_cache = record.attributes, record.attributes
+      rescue Exception => e
+        # trigger dependent record destruction (they were revived before this record,
+        # which cannot be revived due to validations)
+        record.destroy
+        raise e
+      end
     end
 
     def destroy(force = nil)

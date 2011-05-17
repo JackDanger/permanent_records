@@ -82,8 +82,10 @@ module PermanentRecords
         end
       else
         run_callbacks :before_revive
+        attempt_notifying_observers(:before_revive)
         set_deleted_at nil
         run_callbacks :after_revive
+        attempt_notifying_observers(:after_revive)
       end
       self
     end
@@ -159,6 +161,14 @@ module PermanentRecords
 
         # and update the reflection cache
         send(name, :reload)
+      end
+    end
+    
+    def attempt_notifying_observers(callback)
+      begin
+        notify_observers(callback)
+      rescue NoMethodError => e
+        # do nothing: this model isn't being observed
       end
     end
   end

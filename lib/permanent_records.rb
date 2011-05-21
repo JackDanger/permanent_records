@@ -110,7 +110,33 @@ module PermanentRecords
 
     def destroy(force = nil)
       if ActiveRecord::VERSION::MAJOR >= 3
-        return super() unless is_permanent? && (:force != force)
+        unless is_permanent? && (:force != force)
+          # If we force the destruction of the record, we will need to force the destruction of dependent records if the
+          # user specified `:dependent => :destroy` in the model.
+          # By default, the call to super will only soft delete the dependent records; we keep track of the dependent records
+          # that have `:dependent => :destroy` and call destroy(force) on them after the call to super
+          dependent_records = {}
+          
+          # check which dependent records are to be destroyed
+          klass = self.class
+          klass.reflections.each do |key, reflection|
+            if reflection.options[:dependent] == :destroy
+              next unless records = self.send(key) # skip if there are no dependent record instances
+              dependent_record = records.first
+              next if dependent_record.nil?
+              dependent_records[dependent_record.class] = records.map(&:id)
+            end
+          end
+          
+          result = super()
+          if result
+            # permanently delete the dependent records that have `:dependent => :destroy`
+            dependent_records.each do |klass, ids|
+              klass.unscoped.find(ids).each{|i| i.deleted_at = nil; i.destroy(force)}
+            end
+          end
+          return result
+        end
       end
       destroy_with_permanent_records force
     end

@@ -212,4 +212,12 @@ class PermanentRecordsTest < ActiveSupport::TestCase
       end
     end
   end
+  
+  def test_force_deleting_a_record_force_deletes_dependent_records
+    assert_difference('Hole.unscoped.count', -1) do
+      assert_difference('Comment.unscoped.count', -2) do
+        @hole_with_comments.destroy(:force)
+      end
+    end
+  end
 end

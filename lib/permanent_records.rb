@@ -122,6 +122,11 @@ module PermanentRecords
           klass.reflections.each do |key, reflection|
             if reflection.options[:dependent] == :destroy
               next unless records = self.send(key) # skip if there are no dependent record instances
+              if records.respond_to? :size
+                next unless records.size > 0 # skip if there are no dependent record instances
+              else
+                records = [] << records
+              end
               dependent_record = records.first
               next if dependent_record.nil?
               dependent_records[dependent_record.class] = records.map(&:id)
@@ -132,7 +137,15 @@ module PermanentRecords
           if result
             # permanently delete the dependent records that have `:dependent => :destroy`
             dependent_records.each do |klass, ids|
-              klass.unscoped.find(ids).each{|i| i.deleted_at = nil; i.destroy(force)}
+              ids.each do |id|
+                begin
+                  record = klass.unscoped.find(id)
+                rescue ActiveRecord::RecordNotFound
+                  next # the record has already been deleted, possibly due to another association with `:dependent => :destroy`
+                end
+                record.deleted_at = nil
+                record.destroy(force)
+              end
             end
           end
           return result

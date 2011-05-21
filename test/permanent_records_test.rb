@@ -213,10 +213,31 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     end
   end
   
-  def test_force_deleting_a_record_force_deletes_dependent_records
+  def test_force_deleting_a_record_with_has_one_force_deletes_dependent_records
+    hole = Hole.create(:number => 1)
+    location = Location.create(:name => "Near the clubhouse")
+    hole.location = location
+    hole.save!
+    
+    assert_difference('Hole.unscoped.count', -1) do
+      assert_difference('Location.unscoped.count', -1) do
+        hole.destroy(:force)
+      end
+    end
+  end
+  
+  def test_force_deleting_a_record_with_has_many_force_deletes_dependent_records
     assert_difference('Hole.unscoped.count', -1) do
       assert_difference('Comment.unscoped.count', -2) do
         @hole_with_comments.destroy(:force)
+      end
+    end
+  end
+  
+  def test_force_deletign_with_multiple_associations
+    assert_difference('Muskrat.unscoped.count', -2) do
+      assert_difference('Mole.unscoped.count', -1) do
+        @hole.destroy(:force)
       end
     end
   end

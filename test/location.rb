@@ -1,5 +1,5 @@
 class Location < ActiveRecord::Base
   belongs_to :hole
   
-  validates :name, :uniqueness => {:scope => :deleted_at}
+  validates_uniqueness_of :name, :scope => :deleted_at
 end

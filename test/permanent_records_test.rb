@@ -24,13 +24,21 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @mole = @hole.moles.create(:name => "Grabowski")
     
     # test has_one cardinality with model having a default scope
-    Difficulty.unscoped.delete_all
+    if ActiveRecord::VERSION::MAJOR >= 3
+      Difficulty.unscoped.delete_all
+    else
+      Difficulty.delete_all
+    end
     @hole_with_difficulty = Hole.create(:number => 16)
     @hole_with_difficulty.difficulty = Difficulty.create!(:name => 'Hard')
     @hole_with_difficulty.save!
     
     # test has_many cardinality with model having a default scope
-    Comment.unscoped.delete_all
+    if ActiveRecord::VERSION::MAJOR >= 3
+      Comment.unscoped.delete_all
+    else
+      Comment.delete_all
+    end
     @hole_with_comments = Hole.create(:number => 16)
     @hole_with_comments.comments << Comment.create!(:text => "Beware of the pond.")
     @hole_with_comments.comments << Comment.create!(:text => "Muskrats live here.")
@@ -160,28 +168,30 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert !Location.find_by_name("South wall").deleted?
   end
   
-  def test_dependent_permanent_records_with_has_one_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
-    assert @hole_with_difficulty.is_permanent?
-    assert_difference("Difficulty.count", -1) do
-      @hole_with_difficulty.destroy
+  if ActiveRecord::VERSION::MAJOR >= 3
+    def test_dependent_permanent_records_with_has_one_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
+      assert @hole_with_difficulty.is_permanent?
+      assert_difference("Difficulty.count", -1) do
+        @hole_with_difficulty.destroy
+      end
+      assert_nil Difficulty.find_by_name("Hard")
+      assert Difficulty.unscoped.find_by_name("Hard").deleted?
+      @hole_with_difficulty.revive
+      assert_not_nil Difficulty.find_by_name("Hard")
+      assert !Difficulty.unscoped.find_by_name("Hard").deleted?
     end
-    assert_nil Difficulty.find_by_name("Hard")
-    assert Difficulty.unscoped.find_by_name("Hard").deleted?
-    @hole_with_difficulty.revive
-    assert_not_nil Difficulty.find_by_name("Hard")
-    assert !Difficulty.unscoped.find_by_name("Hard").deleted?
-  end
-  
-  def test_dependent_permanent_records_with_has_many_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
-    assert @hole_with_comments.is_permanent?
-    assert_difference("Comment.count", -2) do
-      @hole_with_comments.destroy
+    
+    def test_dependent_permanent_records_with_has_many_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
+      assert @hole_with_comments.is_permanent?
+      assert_difference("Comment.count", -2) do
+        @hole_with_comments.destroy
+      end
+      assert_nil Comment.find_by_text("Beware of the pond.")
+      assert Comment.unscoped.find_by_text("Beware of the pond.").deleted?
+      @hole_with_comments.revive
+      assert_not_nil Comment.find_by_text("Beware of the pond.")
+      assert !Comment.unscoped.find_by_text("Beware of the pond.").deleted?
     end
-    assert_nil Comment.find_by_text("Beware of the pond.")
-    assert Comment.unscoped.find_by_text("Beware of the pond.").deleted?
-    @hole_with_comments.revive
-    assert_not_nil Comment.find_by_text("Beware of the pond.")
-    assert !Comment.unscoped.find_by_text("Beware of the pond.").deleted?
   end
   
   def test_inexistent_dependent_models_should_not_cause_errors
@@ -219,24 +229,24 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     hole.location = location
     hole.save!
     
-    assert_difference('Hole.unscoped.count', -1) do
-      assert_difference('Location.unscoped.count', -1) do
+    assert_difference(monitor_for('Hole'), -1) do
+      assert_difference(monitor_for('Location'), -1) do
         hole.destroy(:force)
       end
     end
   end
   
   def test_force_deleting_a_record_with_has_many_force_deletes_dependent_records
-    assert_difference('Hole.unscoped.count', -1) do
-      assert_difference('Comment.unscoped.count', -2) do
+    assert_difference(monitor_for('Hole'), -1) do
+      assert_difference(monitor_for('Comment'), -2) do
         @hole_with_comments.destroy(:force)
       end
     end
   end
   
   def test_force_deletign_with_multiple_associations
-    assert_difference('Muskrat.unscoped.count', -2) do
-      assert_difference('Mole.unscoped.count', -1) do
+    assert_difference(monitor_for('Muskrat'), -2) do
+      assert_difference(monitor_for('Mole'), -1) do
         @hole.destroy(:force)
       end
     end

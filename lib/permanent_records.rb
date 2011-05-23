@@ -92,7 +92,9 @@ module PermanentRecords
     
     def set_deleted_at(value)
       return self unless is_permanent?
-      record = self.class.unscoped.find(id)
+      record = self.class
+      record = record.unscoped if ActiveRecord::VERSION::MAJOR >= 3
+      record = record.find(id)
       record.deleted_at = value
       begin
         # we call save! instead of update_attribute so an ActiveRecord::RecordInvalid
@@ -111,42 +113,10 @@ module PermanentRecords
     def destroy(force = nil)
       if ActiveRecord::VERSION::MAJOR >= 3
         unless is_permanent? && (:force != force)
-          # If we force the destruction of the record, we will need to force the destruction of dependent records if the
-          # user specified `:dependent => :destroy` in the model.
-          # By default, the call to super will only soft delete the dependent records; we keep track of the dependent records
-          # that have `:dependent => :destroy` and call destroy(force) on them after the call to super
-          dependent_records = {}
-          
-          # check which dependent records are to be destroyed
-          klass = self.class
-          klass.reflections.each do |key, reflection|
-            if reflection.options[:dependent] == :destroy
-              next unless records = self.send(key) # skip if there are no dependent record instances
-              if records.respond_to? :size
-                next unless records.size > 0 # skip if there are no dependent record instances
-              else
-                records = [] << records
-              end
-              dependent_record = records.first
-              next if dependent_record.nil?
-              dependent_records[dependent_record.class] = records.map(&:id)
-            end
-          end
-          
+          dependent_records = get_dependent_records
           result = super()
           if result
-            # permanently delete the dependent records that have `:dependent => :destroy`
-            dependent_records.each do |klass, ids|
-              ids.each do |id|
-                begin
-                  record = klass.unscoped.find(id)
-                rescue ActiveRecord::RecordNotFound
-                  next # the record has already been deleted, possibly due to another association with `:dependent => :destroy`
-                end
-                record.deleted_at = nil
-                record.destroy(force)
-              end
-            end
+            permanently_delete_records(dependent_records)
           end
           return result
         end
@@ -156,7 +126,14 @@ module PermanentRecords
 
     def destroy_with_permanent_records(force = nil)
       if ActiveRecord::VERSION::MAJOR < 3
-        return destroy_without_permanent_records unless is_permanent? && (:force != force)
+        unless is_permanent? && (:force != force)
+          dependent_records = get_dependent_records
+          result = destroy_without_permanent_records
+          if result
+            permanently_delete_records(dependent_records)
+          end
+          return result
+        end
       end
       unless deleted? || new_record?
         set_deleted_at Time.now
@@ -180,17 +157,23 @@ module PermanentRecords
       end.each do |name, reflection|
         cardinality = reflection.macro.to_s.gsub('has_', '')
         if cardinality == 'many'
-          records = send(name).unscoped.find(:all,
-                          :conditions => [
-                            "#{reflection.quoted_table_name}.deleted_at > ?" +
-                            " AND " +
-                            "#{reflection.quoted_table_name}.deleted_at < ?",
-                            deleted_at - 3.seconds,
-                            deleted_at + 3.seconds
-                          ]
-                        )
+          records = send(name)
+          records = records.unscoped if ActiveRecord::VERSION::MAJOR >= 3
+          records = records.find(:all,
+            :conditions => [
+              "#{reflection.quoted_table_name}.deleted_at > ?" +
+              " AND " +
+              "#{reflection.quoted_table_name}.deleted_at < ?",
+              deleted_at - 3.seconds,
+              deleted_at + 3.seconds
+            ]
+          )
         elsif cardinality == 'one'
-          self.class.unscoped do
+          if ActiveRecord::VERSION::MAJOR >= 3
+            self.class.unscoped do
+              records = [] << send(name)
+            end
+          else
             records = [] << send(name)
           end
         end
@@ -208,6 +191,48 @@ module PermanentRecords
         notify_observers(callback)
       rescue NoMethodError => e
         # do nothing: this model isn't being observed
+      end
+    end
+    
+    def get_dependent_records
+      # If we force the destruction of the record, we will need to force the destruction of dependent records if the
+      # user specified `:dependent => :destroy` in the model.
+      # By default, the call to super will only soft delete the dependent records; we keep track of the dependent records
+      # that have `:dependent => :destroy` and call destroy(force) on them after the call to super
+      dependent_records = {}
+      
+      # check which dependent records are to be destroyed
+      klass = self.class
+      klass.reflections.each do |key, reflection|
+        if reflection.options[:dependent] == :destroy
+          next unless records = self.send(key) # skip if there are no dependent record instances
+          if records.respond_to? :size
+            next unless records.size > 0 # skip if there are no dependent record instances
+          else
+            records = [] << records
+          end
+          dependent_record = records.first
+          next if dependent_record.nil?
+          dependent_records[dependent_record.class] = records.map(&:id)
+        end
+      end
+      dependent_records
+    end
+    
+    def permanently_delete_records(dependent_records)
+      # permanently delete the dependent records that have `:dependent => :destroy`
+      dependent_records.each do |klass, ids|
+        ids.each do |id|
+          begin
+            record = klass
+            record = record.unscoped if ActiveRecord::VERSION::MAJOR >= 3
+            record = record.find(id)
+          rescue ActiveRecord::RecordNotFound
+            next # the record has already been deleted, possibly due to another association with `:dependent => :destroy`
+          end
+          record.deleted_at = nil
+          record.destroy(:force)
+        end
       end
     end
   end

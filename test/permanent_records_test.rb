@@ -28,22 +28,19 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @hole.save!
     @mole = @hole.moles.create(:name => "Grabowski")
     
-    # test has_one cardinality with model having a default scope
     if ActiveRecord::VERSION::MAJOR >= 3
       Difficulty.unscoped.delete_all
+      Comment.unscoped.delete_all
     else
       Difficulty.delete_all
+      Comment.delete_all
     end
+    # test has_one cardinality with model having a default scope
     @hole_with_difficulty = Hole.create(:number => 16)
     @hole_with_difficulty.difficulty = Difficulty.create!(:name => 'Hard')
     @hole_with_difficulty.save!
     
     # test has_many cardinality with model having a default scope
-    if ActiveRecord::VERSION::MAJOR >= 3
-      Comment.unscoped.delete_all
-    else
-      Comment.delete_all
-    end
     @hole_with_comments = Hole.create(:number => 16)
     @hole_with_comments.comments << Comment.create!(:text => "Beware of the pond.")
     @hole_with_comments.comments << Comment.create!(:text => "Muskrats live here.")
@@ -173,6 +170,7 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert !Location.find_by_name("South wall").deleted?
   end
   
+  # see comment at top of file for reasoning behind conditional testing of default scope
   if ActiveRecord::VERSION::MAJOR >= 3
     def test_dependent_permanent_records_with_has_one_cardinality_and_default_scope_should_be_revived_when_parent_is_revived
       assert @hole_with_difficulty.is_permanent?

@@ -1,3 +1,8 @@
+# note: functionality to deal with default scopes (and the `unscoped` scope) has been added (and will be tested) for Rails 3
+# this default scope functionality is skipped for Rails 2, because Rails 2 provides no functional means of altering the default scope
+# in particular, setting the default scope in Rails 3 to ignore soft deleted records will work properly, whereas in Rails 2, it will
+# lead to a world of pain
+
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 %w(hole mole muskrat kitty location comment difficulty unused_model).each do |a|

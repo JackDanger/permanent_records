@@ -54,7 +54,22 @@ And if you had dependent records that were set to be destroyed along with the pa
     # all the comments are destroyed as well
     User.find(3).revive
     # all the comments that were just destroyed are now back in pristine condition
+    
+    # forcing deletion works the same way: fi you hard delete a record, its dependent records will also be hard deleted
 
+## Can I use default scopes?
+
+In Rails 3, yes.
+
+    default_scope where(:deleted_at => nil)
+
+If you use such a default scope, you will need to simulate the `deleted` scope with a method
+
+    def self.deleted
+      self.unscoped.where('deleted_at IS NOT NULL')
+    end
+
+Rails 2 provides no practical means of overriding default scopes (aside from using something like `Model.with_exclusive_scope { find(id) }`), so you'll need to implement those yourself if you need them.
 
 Patches welcome, forks celebrated.
 

@@ -9,7 +9,7 @@ begin
     gem.description = %Q{Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.}
     gem.email = "gems@6brand.com"
     gem.homepage = "http://github.com/JackDanger/permanent_records"
-    gem.authors = ["Jack Danger Canty"]
+    gem.authors = ["Jack Danger Canty", "David Sulc"]
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"

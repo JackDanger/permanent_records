@@ -37,4 +37,9 @@ class ActiveSupport::TestCase #:nodoc:
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+  def monitor_for(class_name)
+    result = class_name
+    result += '.unscoped' if ActiveRecord::VERSION::MAJOR >= 3
+    result += '.count'
+  end
 end

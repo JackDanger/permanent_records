@@ -70,10 +70,6 @@ module PermanentRecords
       deleted_at if is_permanent?
     end
 
-    def destroyed?
-      deleted? || super
-    end
-    
     def revive
       if active_record_3?
         _run_revive_callbacks do
@@ -117,10 +113,6 @@ module PermanentRecords
         record.destroy
         raise e
       end
-    end
-
-    def persisted?
-      !(new_record? || @destroyed)
     end
 
     def destroy_with_permanent_records(force = nil)

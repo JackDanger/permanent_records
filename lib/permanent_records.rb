@@ -119,6 +119,10 @@ module PermanentRecords
       end
     end
 
+    def persisted?
+      !(new_record? || @destroyed)
+    end
+
     def destroy_with_permanent_records(force = nil)
       unless active_record_3?
         unless is_permanent? && (:force != force)

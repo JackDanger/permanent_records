@@ -1,1 +1,0 @@
-require 'permanent_records'

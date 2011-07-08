@@ -7,7 +7,7 @@ RAILS_ROOT = File.dirname(__FILE__)
 require 'test/unit'
 require 'active_record'
 require 'active_record/fixtures'
-require "#{File.dirname(__FILE__)}/../init"
+require File.expand_path(File.dirname(__FILE__) + '/../lib/permanent_records')
 
 require File.expand_path(File.dirname(__FILE__) + "/muskrat")
 

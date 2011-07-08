@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'activerecord'
 
-group :test do
+group :development do
+  gem 'rake'
   gem 'sqlite3'
 end

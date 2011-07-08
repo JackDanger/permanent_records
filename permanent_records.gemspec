@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{permanent_records}
-  s.version = "2.1.0"
+  s.version = "2.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty", "David Sulc"]
-  s.date = %q{2011-06-06}
+  s.date = %q{2011-07-08}
   s.description = %q{Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.}
   s.email = %q{gems@6brand.com}
   s.extra_rdoc_files = [
@@ -24,8 +24,6 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
-    "init.rb",
-    "install.rb",
     "lib/permanent_records.rb",
     "permanent_records.gemspec",
     "test/comment.rb",
@@ -39,8 +37,7 @@ Gem::Specification.new do |s|
     "test/permanent_records_test.rb",
     "test/schema.rb",
     "test/test_helper.rb",
-    "test/unused_model.rb",
-    "uninstall.rb"
+    "test/unused_model.rb"
   ]
   s.homepage = %q{http://github.com/JackDanger/permanent_records}
   s.require_paths = ["lib"]
@@ -52,11 +49,20 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activerecord>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
+      s.add_development_dependency(%q<sqlite3>, [">= 0"])
     else
       s.add_dependency(%q<activerecord>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<sqlite3>, [">= 0"])
     end
   else
     s.add_dependency(%q<activerecord>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<sqlite3>, [">= 0"])
   end
 end
 

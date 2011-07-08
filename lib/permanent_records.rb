@@ -5,8 +5,7 @@ module PermanentRecords
 
     # Rails 3
     if ActiveRecord::VERSION::MAJOR >= 3
-      base.scope :deleted, :conditions => 'deleted_at IS NOT NULL'
-      base.scope :not_deleted, :conditions => { :deleted_at => nil }
+      base.extend Scopes
       base.instance_eval { define_model_callbacks :revive }
     # Rails 2.x.x
     elsif base.respond_to?(:named_scope)
@@ -24,6 +23,15 @@ module PermanentRecords
       def is_permanent?
         columns.detect {|c| 'deleted_at' == c.name}
       end
+    end
+  end
+  
+  module Scopes
+    def deleted
+      where("#{table_name}.deleted_at IS NOT NULL")
+    end
+    def not_deleted
+      where("#{table_name}.deleted_at IS NULL")
     end
   end
   

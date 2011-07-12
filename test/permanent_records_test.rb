@@ -5,7 +5,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-%w(hole mole muskrat kitty location comment difficulty unused_model).each do |a|
+%w(dirt hole mole muskrat kitty location comment difficulty unused_model).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
@@ -19,7 +19,8 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     @the_girl   = Muskrat.create!(:name => 'Dot')
     Kitty.delete_all
     @kitty = Kitty.create!(:name => 'Meow Meow')
-    @hole = Hole.create(:number => 14)
+    @dirt = Dirt.create!(:color => 'Brown')
+    @hole = Hole.create(:number => 14, :dirt => @dirt)
     @hole.muskrats.create(:name => "Active Muskrat")
     @hole.muskrats.create(:name => "Deleted Muskrat", :deleted_at => 5.days.ago)
     Location.delete_all
@@ -157,9 +158,11 @@ class PermanentRecordsTest < ActiveSupport::TestCase
   def test_dependent_permanent_records_with_has_many_cardinality_should_be_revived_when_parent_is_revived
     assert @hole.is_permanent?
     @hole.destroy
+    assert @dirt.deleted?
     assert @hole.muskrats.find_by_name("Active Muskrat").deleted?
     @hole.revive
     assert !@hole.muskrats.find_by_name("Active Muskrat").deleted?
+    assert !@dirt.deleted?
   end
   
   def test_dependent_permanent_records_with_has_one_cardinality_should_be_revived_when_parent_is_revived

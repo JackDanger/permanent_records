@@ -1,4 +1,7 @@
 class Hole < ActiveRecord::Base
+  # Because when we're destroying a mole hole we're obviously using high explosives.
+  belongs_to :dirt, :dependent => :destroy
+  
   # muskrats are permanent
   has_many :muskrats, :dependent => :destroy
   # moles are not permanent

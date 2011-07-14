@@ -161,7 +161,7 @@ module PermanentRecords
               deleted_at + 3.seconds
             ]
           )
-        elsif cardinality == 'one'
+        elsif cardinality == 'one' or cardinality == 'belongs_to'
           if active_record_3?
             self.class.unscoped do
               records = [] << send(name)

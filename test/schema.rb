@@ -12,6 +12,7 @@ ActiveRecord::Schema.define(:version => 1) do
 
   create_table :holes, :force => true do |t|
     t.integer :number
+    t.references :dirt
     t.datetime :deleted_at
   end
   
@@ -41,6 +42,11 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :unused_models, :force => true do |t|
     t.string :name
     t.references :hole
+    t.datetime :deleted_at
+  end
+
+  create_table :dirts, :force => true do |t|
+    t.string :color
     t.datetime :deleted_at
   end
 

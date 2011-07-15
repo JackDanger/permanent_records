@@ -170,7 +170,7 @@ module PermanentRecords
             records = [] << send(name)
           end
         end
-        records.compact.each do |dependent|
+        [records].flatten.compact.each do |dependent|
           dependent.revive
         end
 

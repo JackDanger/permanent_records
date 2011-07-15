@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{permanent_records}
-  s.version = "2.2.1"
+  s.version = "2.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty", "David Sulc"]
-  s.date = %q{2011-07-14}
+  s.date = %q{2011-07-15}
   s.description = %q{Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.}
   s.email = %q{gems@6brand.com}
   s.extra_rdoc_files = [

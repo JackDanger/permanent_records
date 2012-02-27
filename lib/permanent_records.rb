@@ -129,16 +129,13 @@ module PermanentRecords
           return permanently_delete_records_after{ destroy_without_permanent_records }
         end
       end
-      unless deleted? || new_record?
-        set_deleted_at Time.now
-      end
       if active_record_3?
         _run_destroy_callbacks do
-          save
+          deleted? || new_record? ? save : set_deleted_at(Time.now)
         end
       else
         run_callbacks :before_destroy
-        save
+        deleted? || new_record? ? save : set_deleted_at(Time.now)
         run_callbacks :after_destroy
       end
       self

@@ -5,7 +5,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-%w(dirt hole mole muskrat kitty location comment difficulty unused_model).each do |a|
+%w(earthworm dirt hole mole muskrat kitty location comment difficulty unused_model).each do |a|
   require File.expand_path(File.dirname(__FILE__) + "/" + a)
 end
 
@@ -142,6 +142,8 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert_no_difference "Muskrat.count" do
       @hole.destroy
     end
+    
+    @hole.reload
     assert @hole.muskrats.first.deleted?
   end
   
@@ -171,6 +173,14 @@ class PermanentRecordsTest < ActiveSupport::TestCase
     assert Location.find_by_name("South wall").deleted?
     @hole.revive
     assert !Location.find_by_name("South wall").deleted?
+  end
+  
+  def test_before_callbacks_for_dependent_records_fire_before_destroy_occurs
+    @earthworm = Earthworm.create(:dirt => @dirt)
+    
+    assert_nothing_raised do
+      @hole.destroy
+    end
   end
   
   # see comment at top of file for reasoning behind conditional testing of default scope

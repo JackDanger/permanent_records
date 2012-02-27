@@ -49,5 +49,9 @@ ActiveRecord::Schema.define(:version => 1) do
     t.string :color
     t.datetime :deleted_at
   end
+  
+  create_table :earthworms, :force => true do |t|
+    t.references :dirt
+  end
 
 end

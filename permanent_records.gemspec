@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{permanent_records}
-  s.version = "2.2.2"
+  s.name = "permanent_records"
+  s.version = "2.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty", "David Sulc"]
-  s.date = %q{2011-07-15}
-  s.description = %q{Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.}
-  s.email = %q{gems@6brand.com}
+  s.date = "2012-02-28"
+  s.description = "Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data."
+  s.email = "gems@6brand.com"
   s.extra_rdoc_files = [
     "LICENSE",
     "README.markdown"
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "test/database.yml",
     "test/difficulty.rb",
     "test/dirt.rb",
+    "test/earthworm.rb",
     "test/hole.rb",
     "test/kitty.rb",
     "test/location.rb",
@@ -40,10 +41,10 @@ Gem::Specification.new do |s|
     "test/test_helper.rb",
     "test/unused_model.rb"
   ]
-  s.homepage = %q{http://github.com/JackDanger/permanent_records}
+  s.homepage = "http://github.com/JackDanger/permanent_records"
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.2}
-  s.summary = %q{Soft-delete your ActiveRecord records}
+  s.rubygems_version = "1.8.17"
+  s.summary = "Soft-delete your ActiveRecord records"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

@@ -4,6 +4,7 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 RAILS_ROOT = File.dirname(__FILE__)
 
+require 'rubygems'
 require 'test/unit'
 require 'active_record'
 require 'active_record/fixtures'
@@ -26,13 +27,13 @@ class ActiveSupport::TestCase #:nodoc:
   #     Fixtures.create_fixtures(Test::Unit::TestCase.fixture_path, table_names)
   #   end
   # end
-  
+
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   $LOAD_PATH.unshift(fixture_path)
-  
+
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
-  
+
   # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
   self.use_instantiated_fixtures  = false
 

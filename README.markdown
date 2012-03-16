@@ -50,7 +50,7 @@ And if you had dependent records that were set to be destroyed along with the pa
     class User < ActiveRecord::Base
       has_many :comments, :dependent => :destroy
     end
-    User.find(3).destory
+    User.find(3).destroy
     # all the comments are destroyed as well
     User.find(3).revive
     # all the comments that were just destroyed are now back in pristine condition

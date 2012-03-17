@@ -1,0 +1,16 @@
+test:
+  :adapter: postgresql
+  :database: permanent_records
+  :min_messages: ERROR
+# sqlite:
+#   :adapter: sqlite
+#   :database: plugin.sqlite.db
+# sqlite3:
+#   :adapter: sqlite3
+#   :database: ":memory:"
+# mysql:
+#   :adapter: mysql
+#   :host: localhost
+#   :username: rails
+#   :password:
+#   :database: plugin_test

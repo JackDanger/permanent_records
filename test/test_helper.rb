@@ -2,7 +2,6 @@
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-RAILS_ROOT = File.dirname(__FILE__)
 
 require 'rubygems'
 require 'test/unit'
@@ -10,13 +9,13 @@ require 'active_record'
 require 'active_record/fixtures'
 require File.expand_path(File.dirname(__FILE__) + '/../lib/permanent_records')
 
-require File.expand_path(File.dirname(__FILE__) + "/muskrat")
+require File.expand_path(File.dirname(__FILE__) + "/../test_lib/muskrat")
 
-config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
+config = YAML::load(IO.read(File.dirname(__FILE__) + '/../test_lib/database.yml'))
+ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/../test_lib/debug.log")
 ActiveRecord::Base.establish_connection(config[ENV['DB'] || 'sqlite3'])
 
-load(File.dirname(__FILE__) + "/schema.rb") if File.exist?(File.dirname(__FILE__) + "/schema.rb")
+load(File.dirname(__FILE__) + "/../test_lib/schema.rb") if File.exist?(File.dirname(__FILE__) + "/../test_lib/schema.rb")
 
 class ActiveSupport::TestCase #:nodoc:
   include ActiveRecord::TestFixtures

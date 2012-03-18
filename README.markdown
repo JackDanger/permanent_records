@@ -5,7 +5,7 @@
 This gem prevents any of your ActiveRecord data from being destroyed.
 Any model that you've given a "deleted_at" datetime column will have that column set rather than let the record be deleted.
 
-## Compatability: This gem works with Rails versions 1, 2, and 3
+## Compatibility: This gem works with Rails versions 1, 2, and 3
 
 ## Does it make a lot of sense?
 

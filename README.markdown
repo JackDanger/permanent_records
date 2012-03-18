@@ -84,4 +84,4 @@ Rails 2 provides no practical means of overriding default scopes (aside from usi
 
 Patches welcome, forks celebrated.
 
-Copyright (c) 2010 Jack Danger Canty @ [http://jåck.com](http://jåck.com) of Cloops Inc., released under the MIT license
+Copyright (c) 2010 Jack Danger Canty @ [http://jåck.com](http://jåck.com) released under the MIT license

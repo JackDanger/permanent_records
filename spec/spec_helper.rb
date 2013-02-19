@@ -2,8 +2,10 @@
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-$:.unshift File.expand_path '/../lib',      File.dirname(__FILE__)
-$:.unshift File.expand_path '../test_lib', File.dirname(__FILE__)
+lib     = Pathname.new File.expand_path('../../lib',       File.dirname(__FILE__))
+support = Pathname.new File.expand_path('../spec/support', File.dirname(__FILE__))
+$:.unshift lib
+$:.unshift support
 RAILS_ROOT = File.dirname(__FILE__)
 
 require 'active_record'
@@ -15,19 +17,16 @@ module Rails
   def self.env; 'test'end
 end
 
-config = YAML::load(IO.read(File.dirname(__FILE__) + '/../test_lib/database.yml'))
 require 'logger'
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/../test_lib/debug.log")
-ActiveRecord::Base.configurations = config
+ActiveRecord::Base.logger = Logger.new support.join("debug.log")
+ActiveRecord::Base.configurations = YAML::load_file support.join('database.yml')
 ActiveRecord::Base.establish_connection
 
-load 'schema.rb' if File.exist?(File.dirname(__FILE__) + "/../test_lib/schema.rb")
+load 'schema.rb' if File.exist?(support.join('schema.rb'))
 
-test_support = Dir.glob(File.expand_path '../test_lib/*.rb', File.dirname(__FILE__))
-test_support.each do |file|
+Dir.glob(support.join('*.rb')).each do |file|
   autoload File.basename(file).chomp('.rb').camelcase.intern, file
-end
-test_support.each do |file|
+end.each do |file|
   require file
 end
 

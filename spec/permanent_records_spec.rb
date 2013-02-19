@@ -45,6 +45,34 @@ describe PermanentRecords do
       end
     end
 
+    context 'with hash-style :force argument' do
+      let(:should_force) {{ force: true }}
+
+      it 'does really remove the record' do
+        expect { subject }.to change { record.class.count }.by(-1)
+      end
+    end
+
+    context 'when validations fail' do
+      before {
+        Hole.any_instance.stub(:valid?).and_return(false)
+      }
+      it 'raises' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      context 'with validation opt-out' do
+        let(:should_force) {{ validate: false }}
+        it 'doesnt raise' do
+          expect { subject }.to_not raise_error
+        end
+        it 'soft-deletes the invalid record' do
+          subject.should be_deleted
+        end
+      end
+    end
+
+
     context 'when model has no deleted_at column' do
       let(:record) { kitty }
 

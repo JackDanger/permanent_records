@@ -43,15 +43,27 @@ module PermanentRecords
   end
 
   def destroy(force = nil)
-    if !is_permanent? || (:force == force)
+    if !is_permanent? || PermanentRecords.should_force_destroy?(force)
       return permanently_delete_records_after { super() }
     end
     destroy_with_permanent_records force
   end
 
+  def self.should_force_destroy?(force)
+    if Hash === force
+      force[:force]
+    else
+      :force == force
+    end
+  end
+
+  def self.should_ignore_validations?(force)
+    Hash === force && false == force[:validate]
+  end
+
   protected
 
-  def set_deleted_at(value)
+  def set_deleted_at(value, force = nil)
     return self unless is_permanent?
     record = self.class.unscoped.find(id)
     record.deleted_at = value
@@ -59,7 +71,11 @@ module PermanentRecords
       # we call save! instead of update_attribute so an ActiveRecord::RecordInvalid
       # error will be raised if the record isn't valid. (This prevents reviving records that
       # disregard validation constraints,)
-      record.save!
+      if PermanentRecords.should_ignore_validations?(force)
+        record.save(:validate => false)
+      else
+        record.save!
+      end
       @attributes, @attributes_cache = record.attributes, record.attributes
     rescue Exception => e
       # trigger dependent record destruction (they were revived before this record,
@@ -71,7 +87,7 @@ module PermanentRecords
 
   def destroy_with_permanent_records(force = nil)
     _run_destroy_callbacks do
-      deleted? || new_record? ? save : set_deleted_at(Time.now)
+      deleted? || new_record? ? save : set_deleted_at(Time.now, force)
     end
     self
   end

@@ -43,7 +43,7 @@ module PermanentRecords
   end
 
   def destroy(force = nil)
-    unless is_permanent? && (:force != force)
+    if !is_permanent? || (:force == force)
       return permanently_delete_records_after { super() }
     end
     destroy_with_permanent_records force

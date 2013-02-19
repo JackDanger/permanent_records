@@ -1,2 +1,2 @@
-test/debug.log
+spec/support/debug.log
 Gemfile.lock

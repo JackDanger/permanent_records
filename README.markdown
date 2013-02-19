@@ -5,7 +5,7 @@
 This gem prevents any of your ActiveRecord data from being destroyed.
 Any model that you've given a "deleted_at" datetime column will have that column set rather than let the record be deleted.
 
-## Compatibility: This gem works with Rails versions 1, 2, and 3
+## Compatibility: This gem is for Rails 3.x
 
 ## Does it make a lot of sense?
 
@@ -66,8 +66,6 @@ And if you had dependent records that were set to be destroyed along with the pa
 
 ## Can I use default scopes?
 
-In Rails 3, yes.
-
 ```ruby
     default_scope where(:deleted_at => nil)
 ```
@@ -80,8 +78,13 @@ If you use such a default scope, you will need to simulate the `deleted` scope w
     end
 ```
 
-Rails 2 provides no practical means of overriding default scopes (aside from using something like `Model.with_exclusive_scope { find(id) }`), so you'll need to implement those yourself if you need them.
+## Productionizing
+
+If you operate a system where destroying or reviving a record takes more
+than about 3 seconds then you'll want to customize
+`PermanentRecords.dependent_record_window = 10.seconds` or some other
+value that works for you.
 
 Patches welcome, forks celebrated.
 
-Copyright (c) 2010 Jack Danger Canty @ [http://jåck.com](http://jåck.com) released under the MIT license
+Copyright (c) 2013 Jack Danger Canty @ [http://jåck.com](http://jåck.com) released under the MIT license

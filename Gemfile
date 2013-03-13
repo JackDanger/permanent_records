@@ -1,16 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', '> 3.0.0'
+gem 'pg'
+gem 'activerecord', ENV['AR_TEST_VERSION']
+gem 'activesupport', ENV['AR_TEST_VERSION']
+gem 'rake'
 
-group :development do
-  gem 'rake'
-  gem 'pg'
-  gem 'activesupport'
-  gem 'sqlite3'
-end
-
-group :test do
-  gem 'awesome_print'
-  gem 'rspec'
-  gem 'database_cleaner'
-end
+gem 'awesome_print'
+gem 'database_cleaner'
+gem 'rspec'

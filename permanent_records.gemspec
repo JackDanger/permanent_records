@@ -3,6 +3,8 @@
 # Instead, edit Jeweler::Tasks in Rakefile, and run 'rake gemspec'
 # -*- encoding: utf-8 -*-
 
+require 'date'
+
 Gem::Specification.new do |s|
   s.name = "permanent_records"
   s.version = File.read('VERSION')

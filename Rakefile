@@ -19,6 +19,8 @@ namespace :db do
   end
 end
 
+task :default => [:spec]
+
 desc 'Run all tests'
 task :spec => 'db:create' do
   ['3.0.0', '3.2.12'].each do |version|

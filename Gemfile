@@ -1,8 +1,11 @@
 source 'https://rubygems.org'
 
+ver = ENV['AR_TEST_VERSION']
+ver = ver.dup.chomp if ver
+
 gem 'pg'
-gem 'activerecord', ENV['AR_TEST_VERSION'].chomp
-gem 'activesupport', ENV['AR_TEST_VERSION'].chomp
+gem 'activerecord', ver
+gem 'activesupport', ver
 gem 'rake'
 
 gem 'awesome_print'

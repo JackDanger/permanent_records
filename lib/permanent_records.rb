@@ -29,7 +29,7 @@ module PermanentRecords
     end
 
     def revive
-      _run_revive_callbacks { set_deleted_at nil }
+      run_callbacks(:revive) { set_deleted_at nil }
       self
     end
 
@@ -65,7 +65,7 @@ module PermanentRecords
     end
 
     def destroy_with_permanent_records(force = nil)
-      _run_destroy_callbacks do
+      run_callbacks(:destroy) do
         deleted? || new_record? ? save : set_deleted_at(Time.now, force)
       end
       self

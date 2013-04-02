@@ -1,16 +1,13 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', '> 3.0.0'
+ver = ENV['AR_TEST_VERSION']
+ver = ver.dup.chomp if ver
 
-group :development do
-  gem 'rake'
-  gem 'pg'
-  gem 'activesupport'
-  gem 'sqlite3'
-end
+gem 'pg'
+gem 'activerecord', ver
+gem 'activesupport', ver
+gem 'rake'
 
-group :test do
-  gem 'awesome_print'
-  gem 'rspec'
-  gem 'database_cleaner'
-end
+gem 'awesome_print'
+gem 'database_cleaner'
+gem 'rspec'

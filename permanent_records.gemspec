@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.version = File.read('VERSION')
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Jack Danger Canty", "David Sulc"]
+  s.authors = ["Jack Danger Canty", "David Sulc", "Joe Nelson", "Trond Arve Nordheim"]
   s.date = Date.today.to_s
   s.description = "Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data."
   s.email = "gems@6brand.com"

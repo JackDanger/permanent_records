@@ -163,11 +163,11 @@ module PermanentRecords
 
   module Scopes
     def deleted
-      where "#{table_name}.deleted_at IS NOT NULL"
+      where arel_table[:deleted_at].not_eq(nil)
     end
 
     def not_deleted
-      where "#{table_name}.deleted_at IS NULL"
+      where arel_table[:deleted_at].eq(nil)
     end
   end
 

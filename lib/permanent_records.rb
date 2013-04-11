@@ -28,8 +28,8 @@ module PermanentRecords
       deleted_at if is_permanent?
     end
 
-    def revive
-      run_callbacks(:revive) { set_deleted_at nil }
+    def revive(validate = nil)
+      run_callbacks(:revive) { set_deleted_at(nil, validate) }
       self
     end
 

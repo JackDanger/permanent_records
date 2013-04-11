@@ -135,8 +135,9 @@ describe PermanentRecords do
   describe '#revive' do
 
     let!(:record) { hole.destroy }
+    let(:should_validate) { nil  }
 
-    subject { record.revive }
+    subject { record.revive should_validate }
 
     it 'returns the record' do
       subject.should == record
@@ -158,6 +159,16 @@ describe PermanentRecords do
       }
       it 'raises' do
         expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      context 'with validation opt-out' do
+        let(:should_validate) {{ validate: false }}
+        it 'doesnt raise' do
+          expect { subject }.to_not raise_error
+        end
+        it 'makes deleted? return false' do
+          subject.should_not be_deleted
+        end
       end
     end
 

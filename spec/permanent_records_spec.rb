@@ -37,6 +37,11 @@ describe PermanentRecords do
       expect { subject }.to_not change { record.class.count }
     end
 
+    it 'handles serialized attributes correctly' do
+      expect { subject.options }.to_not raise_error
+      expect { subject.size }.to_not raise_error if record.respond_to?(:size)
+    end
+
     context 'with force argument set to truthy' do
       let(:should_force) { :force }
 

@@ -56,6 +56,18 @@ module PermanentRecords
           record.save!
         end
         @attributes, @attributes_cache = record.attributes, record.attributes
+        # workaround for active_record >= 3.2.0: re-wrap values of serialized attributes
+        # (record.attributes returns the plain values but in the instance variables they are expected to be wrapped)
+        if defined?(::ActiveRecord::AttributeMethods::Serialization::Attribute)
+          serialized_attribute_class = ::ActiveRecord::AttributeMethods::Serialization::Attribute
+          self.class.serialized_attributes.each do |key, coder|
+            if @attributes.key?(key)
+              attr = serialized_attribute_class.new(coder, @attributes[key], :unserialized)
+              @attributes[key] = attr
+              @attributes_cache[key] = attr
+            end
+          end
+        end
       rescue Exception => e
         # trigger dependent record destruction (they were revived before this record,
         # which cannot be revived due to validations)

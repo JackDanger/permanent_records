@@ -12,6 +12,8 @@ ActiveRecord::Schema.define(:version => 1) do
 
   create_table :holes, :force => true do |t|
     t.integer :number
+    t.text :options
+    t.text :properties
     t.references :dirt
     t.datetime :deleted_at
   end

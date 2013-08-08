@@ -11,4 +11,7 @@ class Hole < ActiveRecord::Base
   has_one :unused_model, :dependent => :destroy
   has_one :difficulty, :dependent => :destroy
   has_many :comments, :dependent => :destroy
+
+  serialize :options, Hash
+  store :properties, :accessors => [:size] if respond_to?(:store)
 end

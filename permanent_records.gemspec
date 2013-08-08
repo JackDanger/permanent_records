@@ -8,6 +8,7 @@ require 'date'
 Gem::Specification.new do |s|
   s.name = "permanent_records"
   s.version = File.read('VERSION')
+  s.license = 'MIT'
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jack Danger Canty", "David Sulc", "Joe Nelson", "Trond Arve Nordheim"]

@@ -120,14 +120,18 @@ describe PermanentRecords do
         end
       end
       context 'as default scope' do
+        let(:load_comments) { Comment.unscoped.find_all_by_hole_id(subject.id) }
         context 'with :has_many cardinality' do
           before {
-            Comment.unscoped.find_all_by_hole_id(subject.id).size.should == 2
+            load_comments.size.should == 2
           }
           it 'deletes them' do
-            Comment.unscoped.find_all_by_hole_id(subject.id).all?(&:deleted?).should be_true
+            load_comments.all?(&:deleted?).should be_true
             # Doesn't change the default scope
-            subject.comments.should be_blank
+            # (in versions with non-broken default scope)
+            if ActiveRecord::VERSION::STRING > '3.0.0'
+              subject.comments.should be_blank
+            end
           end
         end
         context 'with :has_one cardinality' do

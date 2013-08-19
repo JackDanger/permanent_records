@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
     ".document",
     "Gemfile",
     "LICENSE",
-    "MIT-LICENSE",
     "README.markdown",
     "Rakefile",
     "VERSION",

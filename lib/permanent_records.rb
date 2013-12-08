@@ -6,7 +6,7 @@ module PermanentRecords
   # * is_permanent? #=> true/false, depending if you have a deleted_at column
   # * deleted?      #=> true/false, depending if you've called .destroy
   # * destroy       #=> sets deleted_at, your record is now in the .destroyed scope
-  # * revice        #=> undo the destroy
+  # * revive        #=> undo the destroy
   module ActiveRecord
     def self.included(base)
 

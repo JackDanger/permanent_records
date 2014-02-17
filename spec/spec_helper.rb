@@ -17,6 +17,8 @@ module Rails
   def self.env; 'test'end
 end
 
+I18n.config.enforce_available_locales = true
+
 require 'logger'
 ActiveRecord::Base.logger = Logger.new support.join("debug.log")
 ActiveRecord::Base.configurations = YAML::load_file support.join('database.yml')

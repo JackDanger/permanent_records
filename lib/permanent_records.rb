@@ -89,9 +89,8 @@ module PermanentRecords
       end.each do |name, reflection|
         cardinality = reflection.macro.to_s.gsub('has_', '')
         if cardinality == 'many'
-          records = send(name).unscoped.find(
-            :all,
-            :conditions => [
+          records = send(name).unscoped.where(
+            [
               "#{reflection.quoted_table_name}.deleted_at > ?" +
               " AND " +
               "#{reflection.quoted_table_name}.deleted_at < ?",

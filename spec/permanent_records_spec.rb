@@ -120,7 +120,7 @@ describe PermanentRecords do
         end
       end
       context 'as default scope' do
-        let(:load_comments) { Comment.unscoped.find_all_by_hole_id(subject.id) }
+        let(:load_comments) { Comment.unscoped.where(:hole_id => subject.id) }
         context 'with :has_many cardinality' do
           before {
             load_comments.size.should == 2

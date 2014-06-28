@@ -8,7 +8,7 @@ gem 'activesupport', ver
 
 group :test do
   gem 'rake'
-  gem 'pg'
+  gem 'sqlite3'
   gem 'pry'
   gem 'awesome_print'
   gem 'database_cleaner'

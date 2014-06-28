@@ -1,6 +1,6 @@
 test:
-  :adapter: postgresql
-  :database: permanent_records
+  :adapter: sqlite3
+  :database: ":memory:"
   :min_messages: ERROR
 # sqlite:
 #   :adapter: sqlite

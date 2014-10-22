@@ -84,6 +84,10 @@ describe PermanentRecords do
       it 'really removes the record' do
         expect { subject }.to change { record.class.count }.by(-1)
       end
+
+      it 'makes deleted? return true' do
+        subject.should be_deleted
+      end
     end
 
     context 'with dependent records' do

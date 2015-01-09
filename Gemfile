@@ -12,5 +12,5 @@ group :test do
   gem 'pry'
   gem 'awesome_print'
   gem 'database_cleaner'
-  gem 'rspec'
+  gem 'rspec', '~> 2.14.1'
 end

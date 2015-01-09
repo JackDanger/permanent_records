@@ -6,3 +6,5 @@ rvm:
 env:
   - AR_TEST_VERSION: 3.0.0
   - AR_TEST_VERSION: 3.2.12
+  - AR_TEST_VERSION: 4.0.0
+  - AR_TEST_VERSION: 4.2.0

@@ -88,4 +88,4 @@ value that works for you.
 
 Patches welcome, forks celebrated.
 
-Copyright (c) 2013 Jack Danger Canty @ [http://jåck.com](http://jåck.com) released under the MIT license
+Copyright 2015 Jack Danger Canty @ [https://jdanger.com](https://jdanger.com) released under the MIT license

@@ -25,7 +25,11 @@ module PermanentRecords
     end
 
     def deleted?
-      deleted_at if is_permanent?
+      if is_permanent?
+        !!deleted_at
+      else
+        destroyed?
+      end
     end
 
     def revive(validate = nil)

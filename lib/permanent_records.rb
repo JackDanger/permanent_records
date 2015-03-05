@@ -60,16 +60,15 @@ module PermanentRecords
           record.save!
         end
         if ::Gem::Version.new(::ActiveRecord::VERSION::STRING) < ::Gem::Version.new('4.2.0')
-          @attributes, @attributes_cache = record.attributes, record.attributes
+          @attributes = record.attributes
+          @attributes_cache = record.attributes.except(record.class.serialized_attributes.keys)
           # workaround for active_record >= 3.2.0: re-wrap values of serialized attributes
           # (record.attributes returns the plain values but in the instance variables they are expected to be wrapped)
           if defined?(::ActiveRecord::AttributeMethods::Serialization::Attribute)
             serialized_attribute_class = ::ActiveRecord::AttributeMethods::Serialization::Attribute
             self.class.serialized_attributes.each do |key, coder|
               if @attributes.key?(key)
-                attr = serialized_attribute_class.new(coder, @attributes[key], :unserialized)
-                @attributes[key] = attr
-                @attributes_cache[key] = attr
+                @attributes[key] = serialized_attribute_class.new(coder, @attributes[key], :unserialized)
               end
             end
           end

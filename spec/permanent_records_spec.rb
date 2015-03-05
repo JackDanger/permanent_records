@@ -5,7 +5,7 @@ describe PermanentRecords do
   let!(:frozen_moment) { Time.now                            }
   let!(:dirt)          { Dirt.create!                        }
   let!(:earthworm)     { dirt.create_earthworm               }
-  let!(:hole)          { dirt.create_hole                    }
+  let!(:hole)          { dirt.create_hole(:options => {})    }
   let!(:muskrat)       { hole.muskrats.create!               }
   let!(:mole)          { hole.moles.create!                  }
   let!(:location)      { hole.create_location                }
@@ -38,8 +38,8 @@ describe PermanentRecords do
     end
 
     it 'handles serialized attributes correctly' do
-      expect { subject.options }.to_not raise_error
-      expect { subject.size }.to_not raise_error if record.respond_to?(:size)
+      expect(subject.options).to eq({})
+      expect(subject.size).to be_nil if record.respond_to?(:size)
     end
 
     context 'with force argument set to truthy' do

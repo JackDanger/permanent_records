@@ -186,11 +186,7 @@ describe PermanentRecords do
           }
           it 'deletes them' do
             load_comments.all?(&:deleted?).should be_true
-            # Doesn't change the default scope
-            # (in versions with non-broken default scope)
-            if ActiveRecord::VERSION::STRING > '3.0.0'
-              subject.comments.should be_blank
-            end
+            subject.comments.should be_blank
           end
         end
         context 'with :has_one cardinality' do

@@ -33,15 +33,20 @@ module PermanentRecords
     end
 
     def revive(validate = nil)
-      run_callbacks(:revive) { set_deleted_at(nil, validate) }
-      self
+      with_transaction_returning_status do
+        run_callbacks(:revive) { set_deleted_at(nil, validate) }
+        self
+      end
     end
 
     def destroy(force = nil)
-      if !is_permanent? || PermanentRecords.should_force_destroy?(force)
-        return permanently_delete_records_after { super() }
+      with_transaction_returning_status do
+        if !is_permanent? || PermanentRecords.should_force_destroy?(force)
+          permanently_delete_records_after { super() }
+        else
+          destroy_with_permanent_records force
+        end
       end
-      destroy_with_permanent_records force
     end
 
     private

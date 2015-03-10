@@ -19,30 +19,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.markdown"
   ]
-  s.files = [
-    ".document",
-    "Gemfile",
-    "LICENSE",
-    "README.markdown",
-    "Rakefile",
-    "VERSION",
-    "lib/permanent_records.rb",
-    "permanent_records.gemspec",
-    "spec/spec_helper.rb",
-    "spec/permanent_records_spec.rb",
-    "spec/support/comment.rb",
-    "spec/support/database.yml",
-    "spec/support/difficulty.rb",
-    "spec/support/dirt.rb",
-    "spec/support/earthworm.rb",
-    "spec/support/hole.rb",
-    "spec/support/kitty.rb",
-    "spec/support/location.rb",
-    "spec/support/mole.rb",
-    "spec/support/muskrat.rb",
-    "spec/support/schema.rb",
-    "spec/support/unused_model.rb"
-  ]
+  s.files = `git ls-files`.split($\)
   s.homepage = "https://github.com/JackDanger/permanent_records"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.17"

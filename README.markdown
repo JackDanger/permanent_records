@@ -1,4 +1,4 @@
-# PermanentRecords (Rails 3+)
+# PermanentRecords (Rails 3.1+)
 
 [http://github.com/JackDanger/permanent_records/](http://github.com/JackDanger/permanent_records/)
 
@@ -8,12 +8,12 @@ Any model that you've given a "deleted_at" datetime column will have that column
 ## What methods does it give me?
 
 ```ruby
-User.find(3).destroy          # Sets the 'deleted_at' attribute to Time.now 
+User.find(3).destroy          # Sets the 'deleted_at' attribute to Time.now
                               # and returns a frozen record.
-                              
-User.find(3).destroy(:force)  # Executes the real destroy method, the record 
+
+User.find(3).destroy(:force)  # Executes the real destroy method, the record
                               # will be removed from the database.
-                              
+
 User.destroy_all              # Soft-deletes all User records.
 
 User.delete_all               # bye bye everything (no soft-deleting here)
@@ -53,7 +53,7 @@ end
 
 User.find(3).destroy         # All the comments are destroyed as well.
 
-User.find(3).revive          # All the comments that were just destroyed 
+User.find(3).revive          # All the comments that were just destroyed
                              # are now back in pristine condition.
 ```
 
@@ -75,7 +75,7 @@ end
 
 ## Is Everything Automated?
 
-Yes. You don't have to change ANY of your code to get permanent archiving of all your data with this gem. 
+Yes. You don't have to change ANY of your code to get permanent archiving of all your data with this gem.
 When you call `destroy` on any record  (or `destroy_all` on a class or association) your records will
 all have a deleted_at timestamp set on them.
 

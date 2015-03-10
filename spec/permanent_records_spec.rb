@@ -77,7 +77,6 @@ describe PermanentRecords do
       end
     end
 
-
     context 'when model has no deleted_at column' do
       let(:record) { kitty }
 
@@ -100,10 +99,25 @@ describe PermanentRecords do
           it 'marks records as deleted' do
             subject.muskrats.each {|m| m.should be_deleted }
           end
+
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it 'does not mark records as deleted' do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.muskrats.not_deleted.count).to eq(1)
+            end
+          end
+
           context 'with force delete' do
             let(:should_force) { :force }
             it('') { expect { subject }.to change { Muskrat.count }.by(-1) }
             it('') { expect { subject }.to change { Comment.count }.by(-2) }
+
+            context 'when error occurs' do
+              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              it('') { expect { subject }.not_to change { Muskrat.count } }
+              it('') { expect { subject }.not_to change { Comment.count } }
+            end
           end
         end
 
@@ -111,18 +125,59 @@ describe PermanentRecords do
           it 'marks records as deleted' do
             subject.location.should be_deleted
           end
+
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it('does not mark records as deleted') do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.location(true)).not_to be_deleted
+            end
+          end
+
           context 'with force delete' do
             let(:should_force) { :force }
             it('') { expect { subject }.to change { Muskrat.count  }.by(-1) }
             it('') { expect { subject }.to change { Location.count }.by(-1) }
+
+            context 'when error occurs' do
+              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              it('') { expect { subject }.not_to change { Muskrat.count } }
+              it('') { expect { subject }.not_to change { Location.count } }
+            end
+          end
+        end
+
+        context 'with belongs_to cardinality' do
+          it 'marks records as deleted' do
+            subject.dirt.should be_deleted
+          end
+
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it 'does not mark records as deleted' do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.dirt(true)).not_to be_deleted
+            end
+          end
+
+          context 'with force delete' do
+            let(:should_force) { :force }
+            it('') { expect { subject }.to change { Dirt.count }.by(-1) }
+
+            context 'when error occurs' do
+              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              it('') { expect { subject }.not_to change { Dirt.count } }
+            end
           end
         end
       end
+
       context 'that are non-permanent' do
         it 'removes them' do
           expect { subject }.to change { Mole.count }.by(-1)
         end
       end
+
       context 'as default scope' do
         let(:load_comments) { Comment.unscoped.where(:hole_id => subject.id) }
         context 'with :has_many cardinality' do
@@ -131,11 +186,7 @@ describe PermanentRecords do
           }
           it 'deletes them' do
             load_comments.all?(&:deleted?).should be_true
-            # Doesn't change the default scope
-            # (in versions with non-broken default scope)
-            if ActiveRecord::VERSION::STRING > '3.0.0'
-              subject.comments.should be_blank
-            end
+            subject.comments.should be_blank
           end
         end
         context 'with :has_one cardinality' do
@@ -205,19 +256,49 @@ describe PermanentRecords do
           it 'revives them' do
             subject.muskrats.each {|m| m.should_not be_deleted }
           end
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it 'does not revive them' do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.muskrats.deleted.count).to eq(1)
+            end
+          end
         end
 
         context 'with has_one cardinality' do
           it 'revives them' do
             subject.location.should_not be_deleted
           end
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it('does not mark records as deleted') do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.location(true)).to be_deleted
+            end
+          end
+        end
+
+        context 'with belongs_to cardinality' do
+          it 'revives them' do
+            subject.dirt.should_not be_deleted
+          end
+
+          context 'when error occurs' do
+            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            it 'does not revive them' do
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.dirt(true)).to be_deleted
+            end
+          end
         end
       end
+
       context 'that are non-permanent' do
         it 'cannot revive them' do
           expect { subject }.to_not change { Mole.count }
         end
       end
+
       context 'as default scope' do
         context 'with :has_many cardinality' do
           its('comments.size') { should == 2 }

@@ -14,4 +14,14 @@ class Hole < ActiveRecord::Base
 
   serialize :options, Hash
   store :properties, :accessors => [:size] if respond_to?(:store)
+
+  attr_accessor :youre_in_the_hole
+
+  before_destroy :check_youre_not_in_the_hole
+
+  private
+
+  def check_youre_not_in_the_hole
+    !youre_in_the_hole
+  end
 end

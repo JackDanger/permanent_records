@@ -92,7 +92,7 @@ module PermanentRecords
       run_callbacks(:destroy) do
         deleted? || new_record? ? save : set_deleted_at(Time.now, force)
       end
-      self
+      deleted? ? self : false
     end
 
     def revive_destroyed_dependent_records

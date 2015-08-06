@@ -85,6 +85,12 @@ describe PermanentRecords do
       it 'returns false' do
         expect(subject).to eql(false)
       end
+
+      context 'and using the !' do
+        it 'raises a ActiveRecord::RecordNotDestroyed exception' do
+          expect { record.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
+        end
+      end
     end
 
     context 'when model has no deleted_at column' do

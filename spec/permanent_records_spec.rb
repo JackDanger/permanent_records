@@ -86,9 +86,11 @@ describe PermanentRecords do
         expect(subject).to eql(false)
       end
 
-      context 'and using the !' do
-        it 'raises a ActiveRecord::RecordNotDestroyed exception' do
-          expect { record.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
+      unless ENV['AR_TEST_VERSION'] && ENV['AR_TEST_VERSION'].starts_with?('3.')
+        context 'and using the !' do
+          it 'raises a ActiveRecord::RecordNotDestroyed exception' do
+            expect { record.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
+          end
         end
       end
     end

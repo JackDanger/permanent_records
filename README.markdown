@@ -9,7 +9,8 @@ Any model that you've given a "deleted_at" datetime column will have that column
 
 ```ruby
 User.find(3).destroy          # Sets the 'deleted_at' attribute to Time.now
-                              # and returns a frozen record.
+                              # and returns a frozen record. If halted by a
+                              # before_destroy callback it returns false instead
 
 User.find(3).destroy(:force)  # Executes the real destroy method, the record
                               # will be removed from the database.
@@ -78,6 +79,13 @@ end
 Yes. You don't have to change ANY of your code to get permanent archiving of all your data with this gem.
 When you call `destroy` on any record  (or `destroy_all` on a class or association) your records will
 all have a deleted_at timestamp set on them.
+
+## Upgrading from 3.x
+
+The behaviour of the `destroy` method has been updated so that it now returns
+`false` when halted by a before_destroy callback. This is in line with behaviour
+of ActiveRecord. For more information see
+[#47](https://github.com/JackDanger/permanent_records/issues/47).
 
 ## Productionizing
 

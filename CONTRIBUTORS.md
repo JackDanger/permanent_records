@@ -5,6 +5,7 @@ Folks who gave their time and effort and didn't have to:
 * [Trond Arve Nordheim](https://github.com/tanordheim)
 * [Josh Teneycke](https://github.com/jteneycke)
 * [Maximilian Herold](https://github.com/mherold)
+* [Hugh Evans](https://github.com/hughevans)
 
 To join this list just open a GH issue with some code you'd like to
 change in this project. New features are fine, bug fixes are better. No

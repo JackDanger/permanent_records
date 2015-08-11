@@ -86,6 +86,10 @@ describe PermanentRecords do
         expect(subject).to eql(false)
       end
 
+      it 'does not set deleted_at' do
+        expect { subject }.not_to change { record.deleted_at }
+      end
+
       unless ENV['AR_TEST_VERSION'] && ENV['AR_TEST_VERSION'].starts_with?('3.')
         context 'and using the !' do
           it 'raises a ActiveRecord::RecordNotDestroyed exception' do

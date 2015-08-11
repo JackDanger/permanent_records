@@ -86,6 +86,10 @@ describe PermanentRecords do
         expect(subject).to eql(false)
       end
 
+      it 'does not set deleted_at' do
+        expect { subject }.not_to change { record.deleted_at }
+      end
+
       # 4.x+ only
       if ::Gem::Version.new(::ActiveRecord::VERSION::STRING) >= ::Gem::Version.new('4.0.0')
         context 'and using the !' do

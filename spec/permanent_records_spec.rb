@@ -86,7 +86,8 @@ describe PermanentRecords do
         expect(subject).to eql(false)
       end
 
-      unless ENV['AR_TEST_VERSION'] && ENV['AR_TEST_VERSION'].starts_with?('3.')
+      # 4.x+ only
+      if ::Gem::Version.new(::ActiveRecord::VERSION::STRING) >= ::Gem::Version.new('4.0.0')
         context 'and using the !' do
           it 'raises a ActiveRecord::RecordNotDestroyed exception' do
             expect { record.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)

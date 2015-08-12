@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email = "github@jackcanty.com"
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.markdown"
+    "README.md"
   ]
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   s.homepage = "https://github.com/JackDanger/permanent_records"

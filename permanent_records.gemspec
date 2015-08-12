@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('activerecord',  ver || '>= 3.0.0')
   s.add_runtime_dependency('activesupport', ver || '>= 3.0.0')
+  s.add_development_dependency('rake') # For Travis-ci
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pry')
   s.add_development_dependency('database_cleaner')

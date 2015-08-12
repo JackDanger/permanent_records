@@ -11,7 +11,6 @@ RAILS_ROOT = File.dirname(__FILE__)
 require 'active_record'
 require 'active_support'
 require 'permanent_records'
-require 'awesome_print'
 
 module Rails
   def self.env; 'test'end

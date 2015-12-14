@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('activesupport', ver || '>= 4.2.0')
   s.add_development_dependency('rake') # For Travis-ci
   s.add_development_dependency('sqlite3')
-  s.add_development_dependency('pry')
-  s.add_development_dependency('database_cleaner')
+  s.add_development_dependency('pry-byebug')
+  s.add_development_dependency('database_cleaner', '>= 1.5.1')
   s.add_development_dependency('rspec', '~> 2.14.1')
 end
 

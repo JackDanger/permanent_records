@@ -76,6 +76,7 @@ module PermanentRecords
     def destroy_with_permanent_records(force = nil)
       run_callbacks(:destroy) do
         deleted? || new_record? ? save : set_deleted_at(Time.now, force)
+        true
       end
       deleted? ? self : false
     end

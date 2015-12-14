@@ -64,22 +64,7 @@ module PermanentRecords
         else
           record.save!
         end
-        if ::Gem::Version.new(::ActiveRecord::VERSION::STRING) < ::Gem::Version.new('4.2.0')
-          @attributes = record.attributes
-          @attributes_cache = record.attributes.except(record.class.serialized_attributes.keys)
-          # workaround for active_record >= 3.2.0: re-wrap values of serialized attributes
-          # (record.attributes returns the plain values but in the instance variables they are expected to be wrapped)
-          if defined?(::ActiveRecord::AttributeMethods::Serialization::Attribute)
-            serialized_attribute_class = ::ActiveRecord::AttributeMethods::Serialization::Attribute
-            self.class.serialized_attributes.each do |key, coder|
-              if @attributes.key?(key)
-                @attributes[key] = serialized_attribute_class.new(coder, @attributes[key], :unserialized)
-              end
-            end
-          end
-        else # AR >= 4.2.0
-          @attributes = record.instance_variable_get('@attributes')
-        end
+        @attributes = record.instance_variable_get('@attributes')
       rescue Exception => e
         # trigger dependent record destruction (they were revived before this record,
         # which cannot be revived due to validations)

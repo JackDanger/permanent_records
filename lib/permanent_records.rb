@@ -98,12 +98,13 @@ module PermanentRecords
       deleted? ? self : false
     end
 
-    def revive_destroyed_dependent_records(validate = nil)
+    def revive_destroyed_dependent_records(force = nil)
       self.class.reflections.select do |name, reflection|
         'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
       end.each do |name, reflection|
-        cardinality = reflection.macro.to_s.gsub('has_', '')
-        if cardinality == 'many'
+        cardinality = reflection.macro.to_s.gsub('has_', '').to_sym
+        case cardinality
+        when :many
           records = send(name).unscoped.where(
             [
               "#{reflection.quoted_table_name}.deleted_at > ?" +
@@ -113,13 +114,12 @@ module PermanentRecords
               deleted_at + PermanentRecords.dependent_record_window
             ]
           )
-        elsif cardinality == 'one' or cardinality == 'belongs_to'
-          self.class.unscoped do
-            records = [] << send(name)
-          end
+        when :one, :belongs_to
+          self.class.unscoped { records = [] << send(name) }
         end
+
         [records].flatten.compact.each do |dependent|
-          dependent.revive(validate)
+          dependent.revive(force)
         end
 
         # and update the reflection cache

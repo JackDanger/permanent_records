@@ -15,8 +15,6 @@ module PermanentRecords
 
       base.instance_eval do
         define_model_callbacks :revive
-
-        before_revive :revive_destroyed_dependent_records
       end
     end
 
@@ -32,9 +30,14 @@ module PermanentRecords
       end
     end
 
-    def revive(validate = nil)
+    def revive(options = nil)
       with_transaction_returning_status do
-        run_callbacks(:revive) { set_deleted_at(nil, validate) }
+        if PermanentRecords.should_revive_parent_first?(options)
+          revival.reverse
+        else
+          revival
+        end.each { |p| p.call(options) }
+
         self
       end
     end
@@ -51,9 +54,18 @@ module PermanentRecords
 
     private
 
+    def revival
+      [ ->(_validate) { revive_destroyed_dependent_records(_validate) },
+        ->(_validate) { run_callbacks(:revive) { set_deleted_at(nil, _validate) } } ]
+    end
+
+    def get_deleted_record
+      self.class.unscoped.find(id)
+    end
+
     def set_deleted_at(value, force = nil)
       return self unless is_permanent?
-      record = self.class.unscoped.find(id)
+      record = get_deleted_record
       record.deleted_at = value
       begin
         # we call save! instead of update_attribute so an ActiveRecord::RecordInvalid
@@ -81,28 +93,36 @@ module PermanentRecords
       deleted? ? self : false
     end
 
-    def revive_destroyed_dependent_records
+    def add_record_window(request, name, reflection)
+      request.unscoped.where(
+        [
+          "#{reflection.quoted_table_name}.deleted_at > ?" +
+          " AND " +
+          "#{reflection.quoted_table_name}.deleted_at < ?",
+          deleted_at - PermanentRecords.dependent_record_window,
+          deleted_at + PermanentRecords.dependent_record_window
+        ]
+      )
+    end
+
+    def revive_destroyed_dependent_records(force = nil)
       self.class.reflections.select do |name, reflection|
         'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
       end.each do |name, reflection|
-        cardinality = reflection.macro.to_s.gsub('has_', '')
-        if cardinality == 'many'
-          records = send(name).unscoped.where(
-            [
-              "#{reflection.quoted_table_name}.deleted_at > ?" +
-              " AND " +
-              "#{reflection.quoted_table_name}.deleted_at < ?",
-              deleted_at - PermanentRecords.dependent_record_window,
-              deleted_at + PermanentRecords.dependent_record_window
-            ]
-          )
-        elsif cardinality == 'one' or cardinality == 'belongs_to'
-          self.class.unscoped do
-            records = [] << send(name)
+        cardinality = reflection.macro.to_s.gsub('has_', '').to_sym
+        case cardinality
+        when :many
+          records = if deleted_at
+            add_record_window(send(name), name, reflection)
+          else
+            send(name)
           end
+        when :one, :belongs_to
+          self.class.unscoped { records = [] << send(name) }
         end
+
         [records].flatten.compact.each do |dependent|
-          dependent.revive
+          dependent.revive(force)
         end
 
         # and update the reflection cache
@@ -194,6 +214,10 @@ module PermanentRecords
     end
   end
 
+  def self.should_revive_parent_first?(order)
+    Hash === order && true == order[:reverse]
+  end
+
   def self.should_ignore_validations?(force)
     Hash === force && false == force[:validate]
   end
@@ -208,4 +232,3 @@ module PermanentRecords
 end
 
 ActiveRecord::Base.send :include, PermanentRecords::ActiveRecord
-

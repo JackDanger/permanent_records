@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :locations, :force => true do |t|
     t.string :name
     t.references :hole
+    t.integer :parent_id
     t.datetime :deleted_at
   end
 

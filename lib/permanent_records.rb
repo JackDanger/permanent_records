@@ -60,7 +60,11 @@ module PermanentRecords
     end
 
     def get_deleted_record
-      self.class.unscoped.find(id)
+      if self.respond_to?(:parent_id) && self.parent_id.present? # Looking for parent on STI case
+        self.class.unscoped.find(parent_id)
+      else
+        self.class.unscoped.find(id)
+      end
     end
 
     def set_deleted_at(value, force = nil)
@@ -108,7 +112,7 @@ module PermanentRecords
     end
 
     def add_record_window(request, name, reflection)
-      request.unscoped.where(
+      send(name).unscope(where: :deleted_at).where(
         [
           "#{reflection.quoted_table_name}.deleted_at > ?" +
           " AND " +

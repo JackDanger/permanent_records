@@ -1,6 +1,6 @@
 class Earthworm < ActiveRecord::Base
   belongs_to :dirt
-
+  validates :dirt, presence: true
   # Earthworms have been known to complain if they're left on their deathbeds without any dirt
   before_destroy :complain!
 

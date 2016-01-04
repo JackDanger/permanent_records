@@ -7,6 +7,7 @@ class Hole < ActiveRecord::Base
   # moles are not permanent
   has_many :moles, :dependent => :destroy
 
+  has_many :ants, :dependent => :destroy
   has_one :location, :dependent => :destroy
   has_one :unused_model, :dependent => :destroy
   has_one :difficulty, :dependent => :destroy

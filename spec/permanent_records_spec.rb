@@ -343,8 +343,8 @@ describe PermanentRecords do
   describe 'scopes' do
 
     before {
-      3.times { Muskrat.create! }
-      6.times { Muskrat.create!.destroy }
+      3.times { Muskrat.create!({hole: hole}) }
+      6.times { Muskrat.create!({hole: hole}).destroy }
     }
 
     context '.not_deleted' do

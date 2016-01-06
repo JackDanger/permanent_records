@@ -224,7 +224,7 @@ describe PermanentRecords do
 
   describe '#revive' do
 
-    let!(:record) { hole.destroy }
+    let!(:record) { hole.tap(&:destroy) }
     let(:should_validate) { nil  }
 
     subject { record.revive should_validate }

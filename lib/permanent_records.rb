@@ -15,8 +15,6 @@ module PermanentRecords
 
       base.instance_eval do
         define_model_callbacks :revive
-
-        before_revive :revive_destroyed_dependent_records
       end
     end
 
@@ -34,6 +32,7 @@ module PermanentRecords
 
     def revive(validate = nil)
       with_transaction_returning_status do
+        revive_destroyed_dependent_records(validate)
         run_callbacks(:revive) { set_deleted_at(nil, validate) }
         self
       end
@@ -51,9 +50,13 @@ module PermanentRecords
 
     private
 
+    def get_deleted_record
+      self.class.unscoped.find(id)
+    end
+
     def set_deleted_at(value, force = nil)
       return self unless is_permanent?
-      record = self.class.unscoped.find(id)
+      record = get_deleted_record
       record.deleted_at = value
       begin
         # we call save! instead of update_attribute so an ActiveRecord::RecordInvalid
@@ -81,12 +84,13 @@ module PermanentRecords
       deleted? ? self : false
     end
 
-    def revive_destroyed_dependent_records
+    def revive_destroyed_dependent_records(force = nil)
       self.class.reflections.select do |name, reflection|
         'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
       end.each do |name, reflection|
-        cardinality = reflection.macro.to_s.gsub('has_', '')
-        if cardinality == 'many'
+        cardinality = reflection.macro.to_s.gsub('has_', '').to_sym
+        case cardinality
+        when :many
           records = send(name).unscoped.where(
             [
               "#{reflection.quoted_table_name}.deleted_at > ?" +
@@ -96,13 +100,12 @@ module PermanentRecords
               deleted_at + PermanentRecords.dependent_record_window
             ]
           )
-        elsif cardinality == 'one' or cardinality == 'belongs_to'
-          self.class.unscoped do
-            records = [] << send(name)
-          end
+        when :one, :belongs_to
+          self.class.unscoped { records = [] << send(name) }
         end
+
         [records].flatten.compact.each do |dependent|
-          dependent.revive
+          dependent.revive(force)
         end
 
         # and update the reflection cache
@@ -208,4 +211,3 @@ module PermanentRecords
 end
 
 ActiveRecord::Base.send :include, PermanentRecords::ActiveRecord
-

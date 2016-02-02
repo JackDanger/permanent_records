@@ -1,16 +1,19 @@
 require 'bundler'
 require 'yaml'
+require 'English'
 Bundler::GemHelper.install_tasks
 
-$config = YAML::load_file File.expand_path('spec/support/database.yml', File.dirname(__FILE__))
+CONFIG = YAML.load_file(
+  File.expand_path('spec/support/database.yml', File.dirname(__FILE__))
+)
 
 def test_database_exists?
-  system "psql -l | grep -q #{$config['test'][:database]}"
-  $?.success?
+  system "psql -l | grep -q #{CONFIG['test'][:database]}"
+  $CHILD_STATUS.success?
 end
 
 def create_test_database
-  system "createdb #{$config['test'][:database]}"
+  system "createdb #{CONFIG['test'][:database]}"
 end
 
 namespace :db do
@@ -19,9 +22,13 @@ namespace :db do
   end
 end
 
-task :default => [:spec]
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
 
 desc 'Run all tests'
-task :spec => 'db:create' do
+task spec: 'db:create' do
   exec 'rspec'
 end
+
+task default: [:spec, :rubocop]
+

@@ -4,7 +4,7 @@ class Ant < ActiveRecord::Base
 
   after_revive :reactivate_ants
 
-  def add_ant ant
+  def add_ant(ant)
     # do something like you want
 
     # Force reload

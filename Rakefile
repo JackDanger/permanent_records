@@ -23,7 +23,9 @@ namespace :db do
 end
 
 require 'rubocop/rake_task'
-RuboCop::RakeTask.new
+RuboCop::RakeTask.new do |t|
+  t.options = '-d'
+end
 
 desc 'Run all tests'
 task spec: 'db:create' do

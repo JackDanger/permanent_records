@@ -1,16 +1,16 @@
+# rubocop:disable Performance/Count, Performance/TimesMap
 require 'spec_helper'
 
 describe PermanentRecords do
-  let!(:frozen_moment) { Time.now                            }
-  let!(:dirt)          { Dirt.create!                        }
-  let!(:earthworm)     { dirt.create_earthworm               }
-  let!(:hole)          { dirt.create_hole(options: {}) }
-  let!(:muskrat)       { hole.muskrats.create!               }
-  let!(:mole)          { hole.moles.create!                  }
-  let!(:location)      { hole.create_location                }
-  let!(:difficulty)    { hole.create_difficulty              }
-  let!(:comments)      { 2.times.map { hole.comments.create! } }
-  let!(:kitty)         { Kitty.create!                       }
+  let!(:dirt)       { Dirt.create!                          }
+  let!(:earthworm)  { dirt.create_earthworm                 }
+  let!(:hole)       { dirt.create_hole(options: {})         }
+  let!(:muskrat)    { hole.muskrats.create!                 }
+  let!(:mole)       { hole.moles.create!                    }
+  let!(:location)   { hole.create_location                  }
+  let!(:difficulty) { hole.create_difficulty                }
+  let!(:comments)   { 2.times.map { hole.comments.create! } }
+  let!(:kitty)      { Kitty.create!                         }
 
   describe '#destroy' do
     let(:record)       { hole    }
@@ -87,12 +87,11 @@ describe PermanentRecords do
         expect { subject }.not_to change { record.deleted_at }
       end
 
-      # 4.x+ only
-      if ::Gem::Version.new(::ActiveRecord::VERSION::STRING) >= ::Gem::Version.new('4.0.0')
-        context 'and using the !' do
-          it 'raises a ActiveRecord::RecordNotDestroyed exception' do
-            expect { record.destroy! }.to raise_error(ActiveRecord::RecordNotDestroyed)
-          end
+      context 'and using the !' do
+        it 'raises a ActiveRecord::RecordNotDestroyed exception' do
+          expect do
+            record.destroy!
+          end.to raise_error(ActiveRecord::RecordNotDestroyed)
         end
       end
     end
@@ -360,7 +359,7 @@ describe PermanentRecords do
 
     context '.deleted' do
       it 'counts' do
-        Muskrat.deleted.count.should == Muskrat.all.to_a.count(&:deleted?)
+        Muskrat.deleted.count.should == Muskrat.all.select(&:deleted?).size
       end
 
       it 'has no non-deleted records' do

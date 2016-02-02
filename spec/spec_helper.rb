@@ -2,8 +2,12 @@
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
-lib     = Pathname.new File.expand_path('../../lib',       File.dirname(__FILE__))
-support = Pathname.new File.expand_path('../spec/support', File.dirname(__FILE__))
+lib = Pathname.new(
+  File.expand_path('../../lib', File.dirname(__FILE__))
+)
+support = Pathname.new(
+  File.expand_path('../spec/support', File.dirname(__FILE__))
+)
 $LOAD_PATH.unshift lib
 $LOAD_PATH.unshift support
 RAILS_ROOT = File.dirname(__FILE__)
@@ -31,7 +35,6 @@ load 'schema.rb' if File.exist?(support.join('schema.rb'))
 
 Dir.glob(support.join('*.rb')).each do |file|
   autoload File.basename(file).chomp('.rb').camelcase.intern, file
-end.each do |file|
   require file
 end
 

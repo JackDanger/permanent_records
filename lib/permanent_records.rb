@@ -134,7 +134,7 @@ module PermanentRecords
 
     def attempt_notifying_observers(callback)
       notify_observers(callback)
-    rescue NoMethodError => e
+    rescue NoMethodError
       # do nothing: this model isn't being observed
     end
 
@@ -159,11 +159,13 @@ module PermanentRecords
       dependent_records
     end
 
-    # If we force the destruction of the record, we will need to force the destruction of dependent records if the
-    # user specified `:dependent => :destroy` in the model.
-    # By default, the call to super/destroy_with_permanent_records (i.e. the &block param) will only soft delete
-    # the dependent records; we keep track of the dependent records
-    # that have `:dependent => :destroy` and call destroy(force) on them after the call to super
+    # If we force the destruction of the record, we will need to force the
+    # destruction of dependent records if the user specified `:dependent =>
+    # :destroy` in the model.  By default, the call to
+    # super/destroy_with_permanent_records (i.e. the &block param) will only
+    # soft delete the dependent records; we keep track of the dependent records
+    # that have `:dependent => :destroy` and call destroy(force) on them after
+    # the call to super
     def permanently_delete_records_after(&_block)
       dependent_records = get_dependent_records
       result = yield
@@ -187,6 +189,7 @@ module PermanentRecords
     end
   end
 
+  # ActiveRelation scopes
   module Scopes
     def deleted
       where arel_table[:deleted_at].not_eq(nil)
@@ -197,14 +200,15 @@ module PermanentRecords
     end
   end
 
+  # Included into ActiveRecord for all models
   module IsPermanent
-    def is_permanent?
+    def is_permanent? # rubocop:disable Style/PredicateName
       columns.detect { |c| 'deleted_at' == c.name }
     end
   end
 
   def self.should_force_destroy?(force)
-    if Hash === force
+    if force.is_a?(Hash)
       force[:force]
     else
       :force == force
@@ -212,11 +216,11 @@ module PermanentRecords
   end
 
   def self.should_revive_parent_first?(order)
-    Hash === order && true == order[:reverse]
+    order.is_a?(Hash) && true == order[:reverse]
   end
 
   def self.should_ignore_validations?(force)
-    Hash === force && false == force[:validate]
+    force.is_a?(Hash) && false == force[:validate]
   end
 
   def self.dependent_record_window

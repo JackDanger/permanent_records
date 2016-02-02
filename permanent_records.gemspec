@@ -1,20 +1,20 @@
 # encoding: utf-8
 Gem::Specification.new do |s|
-  s.name = "permanent_records"
+  s.name = 'permanent_records'
   s.version = File.read('VERSION')
   s.license = 'MIT'
 
-  s.authors = ["Jack Danger Canty", "David Sulc", "Joe Nelson", "Trond Arve Nordheim", "Josh Teneycke", "Maximilian Herold", "Hugh Evans"]
-  s.summary = "Soft-delete your ActiveRecord records"
-  s.description = "Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data."
-  s.email = "github@jackcanty.com"
+  s.authors = ['Jack Danger Canty', 'David Sulc', 'Joe Nelson', 'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold', 'Hugh Evans']
+  s.summary = 'Soft-delete your ActiveRecord records'
+  s.description = 'Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.'
+  s.email = 'github@jackcanty.com'
   s.extra_rdoc_files = [
-    "LICENSE",
-    "README.md"
+    'LICENSE',
+    'README.md'
   ]
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  s.homepage = "https://github.com/JackDanger/permanent_records"
-  s.require_paths = ["lib"]
+  s.homepage = 'https://github.com/JackDanger/permanent_records'
+  s.require_paths = ['lib']
 
   # For testing against multiple AR versions
   ver = ENV['AR_TEST_VERSION']
@@ -22,10 +22,10 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency('activerecord',  ver || '>= 4.2.0')
   s.add_runtime_dependency('activesupport', ver || '>= 4.2.0')
-  s.add_development_dependency('rake') # For Travis-ci
-  s.add_development_dependency('sqlite3')
-  s.add_development_dependency('pry-byebug')
   s.add_development_dependency('database_cleaner', '>= 1.5.1')
+  s.add_development_dependency('pry-byebug')
+  s.add_development_dependency('rake') # For Travis-ci
   s.add_development_dependency('rspec', '~> 2.14.1')
+  s.add_development_dependency('rubocop')
+  s.add_development_dependency('sqlite3')
 end
-

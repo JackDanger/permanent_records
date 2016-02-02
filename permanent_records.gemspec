@@ -4,15 +4,22 @@ Gem::Specification.new do |s|
   s.version = File.read('VERSION')
   s.license = 'MIT'
 
-  s.authors = ['Jack Danger Canty', 'David Sulc', 'Joe Nelson', 'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold', 'Hugh Evans']
+  s.authors = ['Jack Danger Canty', 'David Sulc', 'Joe Nelson',
+               'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold',
+               'Hugh Evans']
   s.summary = 'Soft-delete your ActiveRecord records'
-  s.description = 'Never Lose Data. Rather than deleting rows this sets Record#deleted_at and gives you all the scopes you need to work with your data.'
+  s.description = <<-EOS
+Never Lose Data. Rather than deleting rows this sets Record#deleted_at and
+gives you all the scopes you need to work with your data.
+EOS
   s.email = 'github@jackcanty.com'
   s.extra_rdoc_files = [
     'LICENSE',
     'README.md'
   ]
-  s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  s.files = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(test|spec|features)/})
+  end
   s.homepage = 'https://github.com/JackDanger/permanent_records'
   s.require_paths = ['lib']
 

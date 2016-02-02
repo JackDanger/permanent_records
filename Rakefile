@@ -2,11 +2,11 @@ require 'bundler'
 require 'yaml'
 Bundler::GemHelper.install_tasks
 
-$config = YAML::load_file File.expand_path('spec/support/database.yml', File.dirname(__FILE__))
+$config = YAML.load_file File.expand_path('spec/support/database.yml', File.dirname(__FILE__))
 
 def test_database_exists?
   system "psql -l | grep -q #{$config['test'][:database]}"
-  $?.success?
+  $CHILD_STATUS.success?
 end
 
 def create_test_database
@@ -19,9 +19,9 @@ namespace :db do
   end
 end
 
-task :default => [:spec]
+task default: [:spec]
 
 desc 'Run all tests'
-task :spec => 'db:create' do
+task spec: 'db:create' do
   exec 'rspec'
 end

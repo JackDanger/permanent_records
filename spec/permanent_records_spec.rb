@@ -1,21 +1,18 @@
 require 'spec_helper'
 
 describe PermanentRecords do
-
   let!(:frozen_moment) { Time.now                            }
   let!(:dirt)          { Dirt.create!                        }
   let!(:earthworm)     { dirt.create_earthworm               }
-  let!(:hole)          { dirt.create_hole(:options => {})    }
+  let!(:hole)          { dirt.create_hole(options: {}) }
   let!(:muskrat)       { hole.muskrats.create!               }
   let!(:mole)          { hole.moles.create!                  }
   let!(:location)      { hole.create_location                }
   let!(:difficulty)    { hole.create_difficulty              }
-  let!(:comments)      { 2.times.map {hole.comments.create!} }
+  let!(:comments)      { 2.times.map { hole.comments.create! } }
   let!(:kitty)         { Kitty.create!                       }
 
-
   describe '#destroy' do
-
     let(:record)       { hole    }
     let(:should_force) { false   }
 
@@ -51,7 +48,7 @@ describe PermanentRecords do
     end
 
     context 'with hash-style :force argument' do
-      let(:should_force) {{ force: true }}
+      let(:should_force) { { force: true } }
 
       it 'does really remove the record' do
         expect { subject }.to change { record.class.count }.by(-1)
@@ -59,15 +56,15 @@ describe PermanentRecords do
     end
 
     context 'when validations fail' do
-      before {
+      before do
         Hole.any_instance.stub(:valid?).and_return(false)
-      }
+      end
       it 'raises' do
         expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       context 'with validation opt-out' do
-        let(:should_force) {{ validate: false }}
+        let(:should_force) { { validate: false } }
         it 'doesnt raise' do
           expect { subject }.to_not raise_error
         end
@@ -120,7 +117,7 @@ describe PermanentRecords do
 
         context 'with has_many cardinality' do
           it 'marks records as deleted' do
-            subject.muskrats.each {|m| m.should be_deleted }
+            subject.muskrats.each { |m| m.should be_deleted }
           end
 
           context 'when error occurs' do
@@ -137,7 +134,9 @@ describe PermanentRecords do
             it('') { expect { subject }.to change { Comment.count }.by(-2) }
 
             context 'when error occurs' do
-              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              before do
+                Difficulty.any_instance.stub(:destroy).and_return(false)
+              end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Comment.count } }
             end
@@ -163,7 +162,9 @@ describe PermanentRecords do
             it('') { expect { subject }.to change { Location.count }.by(-1) }
 
             context 'when error occurs' do
-              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              before do
+                Difficulty.any_instance.stub(:destroy).and_return(false)
+              end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Location.count } }
             end
@@ -188,7 +189,9 @@ describe PermanentRecords do
             it('') { expect { subject }.to change { Dirt.count }.by(-1) }
 
             context 'when error occurs' do
-              before { Difficulty.any_instance.stub(:destroy).and_return(false) }
+              before do
+                Difficulty.any_instance.stub(:destroy).and_return(false)
+              end
               it('') { expect { subject }.not_to change { Dirt.count } }
             end
           end
@@ -202,11 +205,11 @@ describe PermanentRecords do
       end
 
       context 'as default scope' do
-        let(:load_comments) { Comment.unscoped.where(:hole_id => subject.id) }
+        let(:load_comments) { Comment.unscoped.where(hole_id: subject.id) }
         context 'with :has_many cardinality' do
-          before {
+          before do
             load_comments.size.should == 2
-          }
+          end
           it 'deletes them' do
             load_comments.all?(&:deleted?).should be_true
             subject.comments.should be_blank
@@ -223,9 +226,8 @@ describe PermanentRecords do
   end
 
   describe '#revive' do
-
     let!(:record) { hole.tap(&:destroy) }
-    let(:should_validate) { nil  }
+    let(:should_validate) { nil }
 
     subject { record.revive should_validate }
 
@@ -244,15 +246,15 @@ describe PermanentRecords do
     end
 
     context 'when validations fail' do
-      before {
+      before do
         Hole.any_instance.stub(:valid?).and_return(false)
-      }
+      end
       it 'raises' do
         expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
       context 'with validation opt-out' do
-        let(:should_validate) {{ validate: false }}
+        let(:should_validate) { { validate: false } }
         it 'doesnt raise' do
           expect { subject }.to_not raise_error
         end
@@ -269,7 +271,7 @@ describe PermanentRecords do
         end
 
         context 'that were deleted previously' do
-          before { muskrat.update_attributes! :deleted_at => 2.minutes.ago }
+          before { muskrat.update_attributes! deleted_at: 2.minutes.ago }
           it 'does not restore' do
             expect { subject }.to_not change { muskrat.deleted? }
           end
@@ -277,7 +279,7 @@ describe PermanentRecords do
 
         context 'with has_many cardinality' do
           it 'revives them' do
-            subject.muskrats.each {|m| m.should_not be_deleted }
+            subject.muskrats.each { |m| m.should_not be_deleted }
           end
           context 'when error occurs' do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
@@ -326,8 +328,8 @@ describe PermanentRecords do
         context 'with :has_many cardinality' do
           its('comments.size') { should == 2 }
           it 'revives them' do
-            subject.comments.each {|c| c.should_not be_deleted }
-            subject.comments.each {|c| Comment.find_by_id(c.id).should == c }
+            subject.comments.each { |c| c.should_not be_deleted }
+            subject.comments.each { |c| Comment.find_by_id(c.id).should == c }
           end
         end
         context 'with :has_one cardinality' do
@@ -341,30 +343,28 @@ describe PermanentRecords do
   end
 
   describe 'scopes' do
-
-    before {
-      3.times { Muskrat.create!({hole: hole}) }
-      6.times { Muskrat.create!({hole: hole}).destroy }
-    }
+    before do
+      3.times { Muskrat.create!(hole: hole) }
+      6.times { Muskrat.create!(hole: hole).destroy }
+    end
 
     context '.not_deleted' do
-
       it 'counts' do
         Muskrat.not_deleted.count.should == Muskrat.all.reject(&:deleted?).size
       end
 
       it 'has no deleted records' do
-        Muskrat.not_deleted.each {|m| m.should_not be_deleted }
+        Muskrat.not_deleted.each { |m| m.should_not be_deleted }
       end
     end
 
     context '.deleted' do
       it 'counts' do
-        Muskrat.deleted.count.should == Muskrat.all.select(&:deleted?).size
+        Muskrat.deleted.count.should == Muskrat.all.to_a.count(&:deleted?)
       end
 
       it 'has no non-deleted records' do
-        Muskrat.deleted.each {|m| m.should be_deleted }
+        Muskrat.deleted.each { |m| m.should be_deleted }
       end
     end
   end

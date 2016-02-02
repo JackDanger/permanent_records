@@ -1,5 +1,4 @@
 module PermanentRecords
-
   # This module defines the public api that you can
   # use in your model instances.
   #
@@ -9,7 +8,6 @@ module PermanentRecords
   # * revive        #=> undo the destroy
   module ActiveRecord
     def self.included(base)
-
       base.extend Scopes
       base.extend IsPermanent
 
@@ -55,12 +53,12 @@ module PermanentRecords
     private
 
     def revival
-      [ ->(_validate) { revive_destroyed_dependent_records(_validate) },
-        ->(_validate) { run_callbacks(:revive) { set_deleted_at(nil, _validate) } } ]
+      [->(_validate) { revive_destroyed_dependent_records(_validate) },
+       ->(_validate) { run_callbacks(:revive) { set_deleted_at(nil, _validate) } }]
     end
 
     def get_deleted_record
-      if self.respond_to?(:parent_id) && self.parent_id.present? # Looking for parent on STI case
+      if respond_to?(:parent_id) && parent_id.present? # Looking for parent on STI case
         self.class.unscoped.find(parent_id)
       else
         self.class.unscoped.find(id)
@@ -76,7 +74,7 @@ module PermanentRecords
         # error will be raised if the record isn't valid. (This prevents reviving records that
         # disregard validation constraints,)
         if PermanentRecords.should_ignore_validations?(force)
-          record.save(:validate => false)
+          record.save(validate: false)
         else
           record.save!
         end
@@ -97,11 +95,11 @@ module PermanentRecords
       deleted? ? self : false
     end
 
-    def add_record_window(request, name, reflection)
+    def add_record_window(_request, name, reflection)
       send(name).unscope(where: :deleted_at).where(
         [
-          "#{reflection.quoted_table_name}.deleted_at > ?" +
-          " AND " +
+          "#{reflection.quoted_table_name}.deleted_at > ?" \
+          ' AND ' \
           "#{reflection.quoted_table_name}.deleted_at < ?",
           deleted_at - PermanentRecords.dependent_record_window,
           deleted_at + PermanentRecords.dependent_record_window
@@ -110,16 +108,16 @@ module PermanentRecords
     end
 
     def revive_destroyed_dependent_records(force = nil)
-      self.class.reflections.select do |name, reflection|
+      self.class.reflections.select do |_name, reflection|
         'destroy' == reflection.options[:dependent].to_s && reflection.klass.is_permanent?
       end.each do |name, reflection|
         cardinality = reflection.macro.to_s.gsub('has_', '').to_sym
         case cardinality
         when :many
           records = if deleted_at
-            add_record_window(send(name), name, reflection)
-          else
-            send(name)
+                      add_record_window(send(name), name, reflection)
+                    else
+                      send(name)
           end
         when :one, :belongs_to
           self.class.unscoped { records = [] << send(name) }
@@ -135,11 +133,9 @@ module PermanentRecords
     end
 
     def attempt_notifying_observers(callback)
-      begin
-        notify_observers(callback)
-      rescue NoMethodError => e
-        # do nothing: this model isn't being observed
-      end
+      notify_observers(callback)
+    rescue NoMethodError => e
+      # do nothing: this model isn't being observed
     end
 
     # return the records corresponding to an association with the `:dependent => :destroy` option
@@ -149,17 +145,16 @@ module PermanentRecords
       # check which dependent records are to be destroyed
       klass = self.class
       klass.reflections.each do |key, reflection|
-        if reflection.options[:dependent] == :destroy
-          next unless records = self.send(key) # skip if there are no dependent record instances
-          if records.respond_to? :size
-            next unless records.size > 0 # skip if there are no dependent record instances
-          else
-            records = [] << records
-          end
-          dependent_record = records.first
-          next if dependent_record.nil?
-          dependent_records[dependent_record.class] = records.map(&:id)
+        next unless reflection.options[:dependent] == :destroy
+        next unless records = send(key) # skip if there are no dependent record instances
+        if records.respond_to? :size
+          next unless records.size > 0 # skip if there are no dependent record instances
+        else
+          records = [] << records
         end
+        dependent_record = records.first
+        next if dependent_record.nil?
+        dependent_records[dependent_record.class] = records.map(&:id)
       end
       dependent_records
     end
@@ -169,12 +164,10 @@ module PermanentRecords
     # By default, the call to super/destroy_with_permanent_records (i.e. the &block param) will only soft delete
     # the dependent records; we keep track of the dependent records
     # that have `:dependent => :destroy` and call destroy(force) on them after the call to super
-    def permanently_delete_records_after(&block)
+    def permanently_delete_records_after(&_block)
       dependent_records = get_dependent_records
-      result = block.call
-      if result
-        permanently_delete_records(dependent_records)
-      end
+      result = yield
+      permanently_delete_records(dependent_records) if result
       result
     end
 
@@ -206,7 +199,7 @@ module PermanentRecords
 
   module IsPermanent
     def is_permanent?
-      columns.detect {|c| 'deleted_at' == c.name}
+      columns.detect { |c| 'deleted_at' == c.name }
     end
   end
 

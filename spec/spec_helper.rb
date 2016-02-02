@@ -1,11 +1,11 @@
-
+# rubocop:disable
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 lib     = Pathname.new File.expand_path('../../lib',       File.dirname(__FILE__))
 support = Pathname.new File.expand_path('../spec/support', File.dirname(__FILE__))
-$:.unshift lib
-$:.unshift support
+$LOAD_PATH.unshift lib
+$LOAD_PATH.unshift support
 RAILS_ROOT = File.dirname(__FILE__)
 
 require 'active_record'
@@ -13,7 +13,9 @@ require 'active_support'
 require 'permanent_records'
 
 module Rails
-  def self.env; 'test'end
+  def self.env
+    'test'
+  end
 end
 
 if I18n.config.respond_to?(:enforce_available_locales)
@@ -21,8 +23,8 @@ if I18n.config.respond_to?(:enforce_available_locales)
 end
 
 require 'logger'
-ActiveRecord::Base.logger = Logger.new support.join("debug.log")
-ActiveRecord::Base.configurations = YAML::load_file support.join('database.yml')
+ActiveRecord::Base.logger = Logger.new support.join('debug.log')
+ActiveRecord::Base.configurations = YAML.load_file support.join('database.yml')
 ActiveRecord::Base.establish_connection
 
 load 'schema.rb' if File.exist?(support.join('schema.rb'))

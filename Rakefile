@@ -1,6 +1,6 @@
 require 'bundler'
 require 'yaml'
-require 'english'
+require 'English'
 Bundler::GemHelper.install_tasks
 
 CONFIG = YAML.load_file(

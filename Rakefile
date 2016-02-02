@@ -24,13 +24,12 @@ end
 
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new do |t|
-  t.options = '-d'
+  t.options = ['-d']
 end
 
-desc 'Run all tests'
-task spec: 'db:create' do
-  exec 'rspec'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:rspec) do |t|
+  t.rspec_opts = '-f d'
 end
 
-task default: [:spec, :rubocop]
-
+task default: [:rspec, :rubocop]

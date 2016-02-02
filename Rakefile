@@ -1,5 +1,6 @@
 require 'bundler'
 require 'yaml'
+require 'english'
 Bundler::GemHelper.install_tasks
 
 CONFIG = YAML.load_file(
@@ -21,9 +22,13 @@ namespace :db do
   end
 end
 
-task default: [:spec]
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
 
 desc 'Run all tests'
 task spec: 'db:create' do
   exec 'rspec'
 end
+
+task default: [:spec, :rubocop]
+

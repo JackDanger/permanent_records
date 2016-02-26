@@ -161,7 +161,7 @@ module PermanentRecords
       PermanentRecords.dependent_reflections(self.class)
                       .reduce({}) do |records, (key, _)|
         found = Array(send(key)).compact
-        next records unless found.size > 0
+        next records if found.empty?
         records.update found.first.class => found.map(&:id)
       end
     end

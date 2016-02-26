@@ -6,6 +6,6 @@ class Earthworm < ActiveRecord::Base
   before_destroy :complain!
 
   def complain!
-    fail "Where's my dirt?!" if Dirt.not_deleted.find(dirt_id).nil?
+    raise "Where's my dirt?!" if Dirt.not_deleted.find(dirt_id).nil?
   end
 end

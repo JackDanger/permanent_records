@@ -58,7 +58,7 @@ module PermanentRecords
 
     private
 
-    def revival
+    def revival # rubocop:disable Metrics/MethodLength
       [
         lambda do |validate|
           revive_destroyed_dependent_records(validate)
@@ -72,8 +72,7 @@ module PermanentRecords
       ]
     end
 
-    # rubocop:disable Style/AccessorMethodName
-    def get_deleted_record
+    def get_deleted_record # rubocop:disable Style/AccessorMethodName
       # Looking for parent on STI case
       if respond_to?(:parent_id) && parent_id.present?
         self.class.unscoped.find(parent_id)

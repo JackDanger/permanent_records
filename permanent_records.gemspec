@@ -33,6 +33,6 @@ EOS
   s.add_development_dependency('pry-byebug')
   s.add_development_dependency('rake') # For Travis-ci
   s.add_development_dependency('rspec', '~> 2.14.1')
-  s.add_development_dependency('rubocop')
+  s.add_development_dependency('rubocop', '0.39.0')
   s.add_development_dependency('sqlite3')
 end

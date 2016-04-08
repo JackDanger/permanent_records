@@ -1,4 +1,4 @@
-# rubocop:disable Performance/Count, Performance/TimesMap
+# rubocop:disable Performance/TimesMap
 require 'spec_helper'
 
 describe PermanentRecords do

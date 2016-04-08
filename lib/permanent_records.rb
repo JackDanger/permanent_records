@@ -64,7 +64,10 @@ module PermanentRecords
           revive_destroyed_dependent_records(validate)
         end,
         lambda do |validate|
-          run_callbacks(:revive) { set_deleted_at(nil, validate) }
+          run_callbacks(:revive) do
+            set_deleted_at(nil, validate)
+            true
+          end
         end
       ]
     end

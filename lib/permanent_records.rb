@@ -73,12 +73,7 @@ module PermanentRecords
     end
 
     def get_deleted_record # rubocop:disable Style/AccessorMethodName
-      # Looking for parent on STI case
-      if respond_to?(:parent_id) && parent_id.present?
-        self.class.unscoped.find(parent_id)
-      else
-        self.class.unscoped.find(id)
-      end
+      self.class.unscoped.find(id)
     end
 
     # rubocop:disable Metrics/MethodLength

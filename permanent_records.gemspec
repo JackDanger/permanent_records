@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.authors = ['Jack Danger Canty', 'David Sulc', 'Joe Nelson',
                'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold',
-               'Hugh Evans', 'Sergey Gnuskov']
+               'Hugh Evans', 'Sergey Gnuskov', 'aq']
   s.summary = 'Soft-delete your ActiveRecord records'
   s.description = <<-EOS
 Never Lose Data. Rather than deleting rows this sets Record#deleted_at and

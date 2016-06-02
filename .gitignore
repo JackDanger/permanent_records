@@ -1,3 +1,6 @@
 spec/support/debug.log
 Gemfile.lock
 pkg
+
+*.swp
+.bundle

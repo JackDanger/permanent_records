@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 1) do
     t.text :options
     t.text :properties
     t.references :dirt
+    t.integer :ants_count, default: 0
     t.datetime :deleted_at
   end
 

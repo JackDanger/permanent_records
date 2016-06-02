@@ -66,6 +66,10 @@ module PermanentRecords
         lambda do |validate|
           run_callbacks(:revive) do
             set_deleted_at(nil, validate)
+            # increment all associated counters for counter cache
+            each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
+              assoc_class.increment_counter counter_cache_column, assoc_id
+            end
             true
           end
         end
@@ -91,6 +95,7 @@ module PermanentRecords
         else
           record.save!
         end
+
         @attributes = record.instance_variable_get('@attributes')
       rescue => e
         # trigger dependent record destruction (they were revived before this
@@ -100,9 +105,27 @@ module PermanentRecords
       end
     end
 
+    def each_counter_cache
+      _reflections.each do |name, reflection|
+        associated_class = association(name).reflection.class_name.constantize
+        next unless reflection.belongs_to? && reflection.counter_cache_column
+        yield(associated_class,
+              reflection.counter_cache_column,
+              send(reflection.foreign_key))
+      end
+    end
+
     def destroy_with_permanent_records(force = nil)
       run_callbacks(:destroy) do
-        deleted? || new_record? ? save : set_deleted_at(Time.now, force)
+        if deleted? || new_record?
+          save
+        else
+          set_deleted_at(Time.now, force)
+          # decrement all associated counters for counter cache
+          each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
+            assoc_class.decrement_counter counter_cache_column, assoc_id
+          end
+        end
         true
       end
       deleted? ? self : false

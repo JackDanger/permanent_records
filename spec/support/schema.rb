@@ -3,6 +3,8 @@ ActiveRecord::Schema.define(version: 1) do
     t.column :name,         :string
     t.column :deleted_at,   :datetime
     t.references :hole
+    t.integer :any_hole_id
+    t.string :any_hole_type
   end
 
   create_table :muskrats, force: true do |t|

@@ -107,8 +107,12 @@ module PermanentRecords
 
     def each_counter_cache
       _reflections.each do |name, reflection|
-        associated_class = association(name).reflection.class_name.constantize
+        association = send(name.to_sym)
+        next if association.nil?
         next unless reflection.belongs_to? && reflection.counter_cache_column
+
+        associated_class = association.class
+
         yield(associated_class,
               reflection.counter_cache_column,
               send(reflection.foreign_key))

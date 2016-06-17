@@ -14,6 +14,8 @@ class Hole < ActiveRecord::Base
   has_one :difficulty, dependent: :destroy
   has_many :comments, dependent: :destroy
 
+  has_many :poly_ants, class_name: 'Ant', dependent: :destroy, as: :any_hole
+
   serialize :options, Hash
   store :properties, accessors: [:size] if respond_to?(:store)
 

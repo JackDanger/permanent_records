@@ -1,6 +1,8 @@
 class Ant < ActiveRecord::Base
   belongs_to :hole, counter_cache: true
-  validates :hole, presence: true
+  belongs_to :any_hole, polymorphic: true, counter_cache: true
+
+  validates :hole, presence: true, unless: :any_hole
 
   def add_ant(ant)
     # do something like you want

@@ -1,6 +1,6 @@
 spec/support/debug.log
 Gemfile.lock
 pkg
-
+permanent_records*.gem
 *.swp
 .bundle

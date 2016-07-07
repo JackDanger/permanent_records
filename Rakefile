@@ -3,6 +3,7 @@ require 'yaml'
 require 'English'
 Bundler::GemHelper.install_tasks
 
+version = File.read('./VERSION').chomp
 CONFIG = YAML.load_file(
   File.expand_path('spec/support/database.yml', File.dirname(__FILE__))
 )
@@ -30,6 +31,15 @@ end
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:rspec) do |t|
   t.rspec_opts = '-f d -c'
+end
+
+task publish: [:rubocop, :rspec] do
+  # Ensure the gem builds
+  system('gem build permanent_records.gemspec') &&
+    # And we didn't leave anything (aside from the gem) uncommitted
+    !system('git status -s | egrep -v .') &&
+    system('git push') &&
+    system("gem push permanent_records-#{version}.gem")
 end
 
 task default: [:rspec, :rubocop]

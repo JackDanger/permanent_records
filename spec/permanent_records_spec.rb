@@ -134,7 +134,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Comment.count } }
@@ -162,7 +162,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Location.count } }
@@ -189,7 +189,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Dirt.count } }
             end

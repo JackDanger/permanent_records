@@ -166,10 +166,9 @@ module PermanentRecords
         end.to_a.flatten.compact.each do |dependent|
           dependent.revive(force)
         end
-
-        # and update the reflection cache
-        send(name, :reload)
       end
+      # and update the reflection cache
+      reload
     end
 
     def attempt_notifying_observers(callback)

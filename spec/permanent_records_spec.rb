@@ -151,7 +151,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.location(true)).not_to be_deleted
+              expect(record.reload.location).not_to be_deleted
             end
           end
 
@@ -179,7 +179,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it 'does not mark records as deleted' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.dirt(true)).not_to be_deleted
+              expect(record.dirt).not_to be_deleted
             end
           end
 
@@ -297,7 +297,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.location(true)).to be_deleted
+              expect(record.location).to be_deleted
             end
           end
         end
@@ -311,7 +311,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it 'does not revive them' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.dirt(true)).to be_deleted
+              expect(record.dirt).to be_deleted
             end
           end
         end

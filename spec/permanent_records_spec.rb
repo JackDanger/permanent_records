@@ -134,7 +134,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Comment.count } }
@@ -151,7 +151,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.location(true)).not_to be_deleted
+              expect(record.reload.location).not_to be_deleted
             end
           end
 
@@ -162,7 +162,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Location.count } }
@@ -179,7 +179,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it 'does not mark records as deleted' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.dirt(true)).not_to be_deleted
+              expect(record.dirt).not_to be_deleted
             end
           end
 
@@ -189,7 +189,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy) { throw(:abort) }
               end
               it('') { expect { subject }.not_to change { Dirt.count } }
             end
@@ -297,7 +297,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.location(true)).to be_deleted
+              expect(record.location).to be_deleted
             end
           end
         end
@@ -311,7 +311,7 @@ describe PermanentRecords do
             before { Hole.any_instance.stub(:valid?).and_return(false) }
             it 'does not revive them' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.dirt(true)).to be_deleted
+              expect(record.dirt).to be_deleted
             end
           end
         end

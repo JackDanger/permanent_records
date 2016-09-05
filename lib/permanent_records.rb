@@ -151,20 +151,24 @@ module PermanentRecords
     # namespace.
     # rubocop:disable Metrics/AbcSize
     def revive_destroyed_dependent_records(force = nil)
-      PermanentRecords.dependent_permanent_reflections(self.class)
-                      .each do |name, reflection|
-        cardinality = reflection.macro.to_s.gsub('has_', '').to_sym
+      destroyed_dependent_relations.each do |relation|
+        relation.to_a.each { |destroyed_dependent_record| destroyed_dependent_record.revive(force) }
+      end
+      reload
+    end
+
+    def destroyed_dependent_relations
+      PermanentRecords.dependent_permanent_reflections(self.class).map do |name, relation|
+        cardinality = relation.macro.to_s.gsub('has_', '').to_sym
         case cardinality
         when :many
           if deleted_at
-            add_record_window(send(name), name, reflection)
+            add_record_window(send(name), name, relation)
           else
             send(name)
           end
         when :one, :belongs_to
           self.class.unscoped { Array(send(name)) }
-        end.to_a.flatten.compact.each do |dependent|
-          dependent.revive(force)
         end
 
         # and update the reflection cache

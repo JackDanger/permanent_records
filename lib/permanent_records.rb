@@ -152,7 +152,7 @@ module PermanentRecords
     # rubocop:disable Metrics/AbcSize
     def revive_destroyed_dependent_records(force = nil)
       destroyed_dependent_relations.each do |relation|
-        relation.to_a.each { |destroyed_dependent_record| destroyed_dependent_record.revive(force) }
+        relation.to_a.each { |destroyed_dependent_record| destroyed_dependent_record&.revive(force) }
       end
       reload
     end

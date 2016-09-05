@@ -328,13 +328,13 @@ describe PermanentRecords do
           its('comments.size') { is_expected.to eq(2) }
           it 'revives them' do
             subject.comments.each { |c| expect(c).not_to be_deleted }
-            subject.comments.each { |c| expect(Comment.find_by_id(c.id)).to eq(c) }
+            subject.comments.each { |c| expect(Comment.find(c.id)).to eql(c) }
           end
         end
         context 'with :has_one cardinality' do
           it 'revives them' do
             expect(subject.difficulty).not_to be_deleted
-            expect(Difficulty.find_by_id(subject.difficulty.id)).to eq(difficulty)
+            expect(Difficulty.find(subject.difficulty.id)).to eql(difficulty)
           end
         end
       end
@@ -349,7 +349,9 @@ describe PermanentRecords do
 
     context '.not_deleted' do
       it 'counts' do
-        expect(Muskrat.not_deleted.count).to eq(Muskrat.all.reject(&:deleted?).size)
+        expect(Muskrat.not_deleted.count).to eql(
+          Muskrat.all.reject(&:deleted?).size
+        )
       end
 
       it 'has no deleted records' do

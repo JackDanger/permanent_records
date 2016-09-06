@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe PermanentRecords do
-  let(:hole) { dirt.hole }
+  let(:hole) { Hole.create }
+  let(:dirt) { Dirt.create(hole: hole) }
   let!(:ant) { hole.ants.create! }
-  let(:dirt) { Dirt.create!.tap(&:create_hole) }
 
   before { hole.destroy }
 

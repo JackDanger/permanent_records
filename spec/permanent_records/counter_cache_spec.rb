@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe PermanentRecords do
-  let(:dirt) { Dirt.create!.tap(&:create_hole) }
-  let(:hole) { dirt.hole }
+  let(:hole) { Hole.create }
+  let(:dirt) { Dirt.create(hole: hole) }
 
   it 'have correct initial ants_count' do
     expect(hole.ants_count).to eq 0

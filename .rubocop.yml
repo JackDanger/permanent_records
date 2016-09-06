@@ -1,3 +1,15 @@
 AllCops:
   Exclude:
     - bin/*
+
+Metrics/LineLength:
+  Max: 120
+  
+Metrics/ModuleLength:
+  Max: 120
+
+Lint/UnneededDisable:
+  Enabled: false
+
+Style/PredicateName:
+  Enabled: false

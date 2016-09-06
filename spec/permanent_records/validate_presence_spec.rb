@@ -6,7 +6,7 @@ describe PermanentRecords do
 
   describe '#revive' do
     context 'child validate presence of parent' do
-      it 'when parent is revived, he cant see his children due the default scope' do
+      it 'when you revive parent first children are revived although the default scope' do
         expect {
           house.destroy
         }.to change {
@@ -17,9 +17,11 @@ describe PermanentRecords do
 
         expect {
           house.revive(reverse: true)
-        }.to_not change {
+        }.to change {
+          house.reload.deleted?
+        }.to(false) & change {
           room.reload.deleted?
-        }
+        }.to(false)
       end
     end
   end

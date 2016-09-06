@@ -64,4 +64,13 @@ ActiveRecord::Schema.define(version: 1) do
   create_table :earthworms, force: true do |t|
     t.references :dirt
   end
+
+  create_table :houses, force: true do |t|
+    t.datetime :deleted_at
+  end
+
+  create_table :rooms, force: true do |t|
+    t.references :house
+    t.datetime :deleted_at
+  end
 end

@@ -170,9 +170,6 @@ module PermanentRecords
         when :one, :belongs_to
           self.class.unscoped { Array(send(name)) }
         end
-
-        # and update the reflection cache
-        send(name, :reload)
       end
     end
 

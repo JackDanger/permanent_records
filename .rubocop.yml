@@ -4,3 +4,6 @@ AllCops:
 
 Style/BlockDelimiters:
   Enabled: false
+
+Metrics/LineLength:
+  Max: 120

@@ -165,7 +165,7 @@ module PermanentRecords
           if deleted_at
             add_record_window(send(name), name, relation)
           else
-            send(name)
+            send(name).unscope(where: :deleted_at)
           end
         when :one, :belongs_to
           self.class.unscoped { Array(send(name)) }

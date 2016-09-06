@@ -19,15 +19,15 @@ describe PermanentRecords do
     subject { record.destroy should_force }
 
     it 'returns the record' do
-      subject.should == record
+      expect(subject).to eq(record)
     end
 
     it 'makes deleted? return true' do
-      subject.should be_deleted
+      expect(subject).to be_deleted
     end
 
     it 'sets the deleted_at attribute' do
-      subject.deleted_at.should be_within(0.1).of(Time.now)
+      expect(subject.deleted_at).to be_within(0.1).of(Time.now)
     end
 
     it 'does not really remove the record' do
@@ -57,7 +57,7 @@ describe PermanentRecords do
 
     context 'when validations fail' do
       before do
-        Hole.any_instance.stub(:valid?).and_return(false)
+        allow_any_instance_of(Hole).to receive(:valid?).and_return(false)
       end
       it 'raises' do
         expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
@@ -69,7 +69,7 @@ describe PermanentRecords do
           expect { subject }.to_not raise_error
         end
         it 'soft-deletes the invalid record' do
-          subject.should be_deleted
+          expect(subject).to be_deleted
         end
       end
     end
@@ -104,7 +104,7 @@ describe PermanentRecords do
       end
 
       it 'makes deleted? return true' do
-        subject.should be_deleted
+        expect(subject).to be_deleted
       end
     end
 
@@ -116,11 +116,11 @@ describe PermanentRecords do
 
         context 'with has_many cardinality' do
           it 'marks records as deleted' do
-            subject.muskrats.each { |m| m.should be_deleted }
+            subject.muskrats.each { |m| expect(m).to be_deleted }
           end
 
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it 'does not mark records as deleted' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.muskrats.not_deleted.count).to eq(1)
@@ -134,7 +134,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Comment.count } }
@@ -144,11 +144,11 @@ describe PermanentRecords do
 
         context 'with has_one cardinality' do
           it 'marks records as deleted' do
-            subject.location.should be_deleted
+            expect(subject.location).to be_deleted
           end
 
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.location(true)).not_to be_deleted
@@ -162,7 +162,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
               it('') { expect { subject }.not_to change { Muskrat.count } }
               it('') { expect { subject }.not_to change { Location.count } }
@@ -172,11 +172,11 @@ describe PermanentRecords do
 
         context 'with belongs_to cardinality' do
           it 'marks records as deleted' do
-            subject.dirt.should be_deleted
+            expect(subject.dirt).to be_deleted
           end
 
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it 'does not mark records as deleted' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.dirt(true)).not_to be_deleted
@@ -189,7 +189,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                Difficulty.any_instance.stub(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
               it('') { expect { subject }.not_to change { Dirt.count } }
             end
@@ -207,17 +207,17 @@ describe PermanentRecords do
         let(:load_comments) { Comment.unscoped.where(hole_id: subject.id) }
         context 'with :has_many cardinality' do
           before do
-            load_comments.size.should == 2
+            expect(load_comments.size).to eq(2)
           end
           it 'deletes them' do
-            load_comments.all?(&:deleted?).should be_true
-            subject.comments.should be_blank
+            expect(load_comments.all?(&:deleted?)).to be_truthy
+            expect(subject.comments).to be_blank
           end
         end
         context 'with :has_one cardinality' do
           it 'deletes them' do
-            subject.difficulty.should be_deleted
-            Difficulty.find_by_id(subject.difficulty.id).should be_nil
+            expect(subject.difficulty).to be_deleted
+            expect(Difficulty.find_by_id(subject.difficulty.id)).to be_nil
           end
         end
       end
@@ -231,7 +231,7 @@ describe PermanentRecords do
     subject { record.revive should_validate }
 
     it 'returns the record' do
-      subject.should == record
+      expect(subject).to eq(record)
     end
 
     it 'unsets deleted_at' do
@@ -241,12 +241,12 @@ describe PermanentRecords do
     end
 
     it 'makes deleted? return false' do
-      subject.should_not be_deleted
+      expect(subject).not_to be_deleted
     end
 
     context 'when validations fail' do
       before do
-        Hole.any_instance.stub(:valid?).and_return(false)
+        allow_any_instance_of(Hole).to receive(:valid?).and_return(false)
       end
       it 'raises' do
         expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
@@ -258,7 +258,7 @@ describe PermanentRecords do
           expect { subject }.to_not raise_error
         end
         it 'makes deleted? return false' do
-          subject.should_not be_deleted
+          expect(subject).not_to be_deleted
         end
       end
     end
@@ -278,10 +278,10 @@ describe PermanentRecords do
 
         context 'with has_many cardinality' do
           it 'revives them' do
-            subject.muskrats.each { |m| m.should_not be_deleted }
+            subject.muskrats.each { |m| expect(m).not_to be_deleted }
           end
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it 'does not revive them' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.muskrats.deleted.count).to eq(1)
@@ -291,10 +291,10 @@ describe PermanentRecords do
 
         context 'with has_one cardinality' do
           it 'revives them' do
-            subject.location.should_not be_deleted
+            expect(subject.location).not_to be_deleted
           end
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it('does not mark records as deleted') do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.location(true)).to be_deleted
@@ -304,11 +304,11 @@ describe PermanentRecords do
 
         context 'with belongs_to cardinality' do
           it 'revives them' do
-            subject.dirt.should_not be_deleted
+            expect(subject.dirt).not_to be_deleted
           end
 
           context 'when error occurs' do
-            before { Hole.any_instance.stub(:valid?).and_return(false) }
+            before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
             it 'does not revive them' do
               expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
               expect(record.dirt(true)).to be_deleted
@@ -325,16 +325,22 @@ describe PermanentRecords do
 
       context 'as default scope' do
         context 'with :has_many cardinality' do
-          its('comments.size') { should == 2 }
+          describe '#comments' do
+            subject { super().comments }
+            describe '#size' do
+              subject { super().size }
+              it { should == 2 }
+            end
+          end
           it 'revives them' do
-            subject.comments.each { |c| c.should_not be_deleted }
-            subject.comments.each { |c| Comment.find_by_id(c.id).should == c }
+            subject.comments.each { |c| expect(c).not_to be_deleted }
+            subject.comments.each { |c| expect(Comment.find_by_id(c.id)).to eq(c) }
           end
         end
         context 'with :has_one cardinality' do
           it 'revives them' do
-            subject.difficulty.should_not be_deleted
-            Difficulty.find_by_id(subject.difficulty.id).should == difficulty
+            expect(subject.difficulty).not_to be_deleted
+            expect(Difficulty.find_by_id(subject.difficulty.id)).to eq(difficulty)
           end
         end
       end
@@ -349,21 +355,21 @@ describe PermanentRecords do
 
     context '.not_deleted' do
       it 'counts' do
-        Muskrat.not_deleted.count.should == Muskrat.all.reject(&:deleted?).size
+        expect(Muskrat.not_deleted.count).to eq(Muskrat.all.reject(&:deleted?).size)
       end
 
       it 'has no deleted records' do
-        Muskrat.not_deleted.each { |m| m.should_not be_deleted }
+        Muskrat.not_deleted.each { |m| expect(m).not_to be_deleted }
       end
     end
 
     context '.deleted' do
       it 'counts' do
-        Muskrat.deleted.count.should == Muskrat.all.select(&:deleted?).size
+        expect(Muskrat.deleted.count).to eq(Muskrat.all.select(&:deleted?).size)
       end
 
       it 'has no non-deleted records' do
-        Muskrat.deleted.each { |m| m.should be_deleted }
+        Muskrat.deleted.each { |m| expect(m).to be_deleted }
       end
     end
   end

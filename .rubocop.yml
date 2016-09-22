@@ -1,3 +1,9 @@
 AllCops:
   Exclude:
     - bin/*
+
+Metrics/LineLength:
+  Max: 120
+
+Style/BlockDelimiters:
+  Enabled: false

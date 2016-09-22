@@ -15,6 +15,7 @@ RAILS_ROOT = File.dirname(__FILE__)
 require 'active_record'
 require 'active_support'
 require 'permanent_records'
+require 'its'
 
 module Rails
   def self.env

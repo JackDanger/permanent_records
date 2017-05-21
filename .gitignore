@@ -2,6 +2,5 @@ spec/support/debug.log
 Gemfile.lock
 pkg
 permanent_records*.gem
-db.sqlite
 *.swp
 .bundle

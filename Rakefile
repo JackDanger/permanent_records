@@ -33,7 +33,11 @@ RSpec::Core::RakeTask.new(:rspec) do |t|
   t.rspec_opts = '-f d -c'
 end
 
-task publish: [:rubocop, :rspec] do
+task :pandoc do
+  system("pandoc -s -r markdown -w rst README.md -o README.rst")
+end
+
+task publish: [:pandoc, :rubocop, :rspec] do
   # Ensure the gem builds
   system('gem build permanent_records.gemspec') &&
     # And we didn't leave anything (aside from the gem) uncommitted

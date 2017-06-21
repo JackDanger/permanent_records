@@ -34,7 +34,7 @@ RSpec::Core::RakeTask.new(:rspec) do |t|
 end
 
 task :pandoc do
-  system("pandoc -s -r markdown -w rst README.md -o README.rst")
+  system('pandoc -s -r markdown -w rst README.md -o README.rst')
 end
 
 task publish: [:pandoc, :rubocop, :rspec] do

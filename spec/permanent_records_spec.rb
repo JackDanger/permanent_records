@@ -11,6 +11,7 @@ describe PermanentRecords do
   let!(:difficulty) { hole.create_difficulty                }
   let!(:comments)   { 2.times.map { hole.comments.create! } }
   let!(:kitty)      { Kitty.create!                         }
+  let!(:meerkat)    { Meerkat.create!(holes: [hole])        }
 
   describe '#destroy' do
     let(:record)       { hole    }
@@ -222,6 +223,28 @@ describe PermanentRecords do
         end
       end
     end
+
+    context 'with habtm association' do
+      it 'does not remove the associated records' do
+        expect { subject }.not_to change { Meerkat.count }
+      end
+
+      it 'does not remove the entry from the join table' do
+        expect { subject }.not_to change { meerkat.holes.count }
+      end
+
+      context 'with force argument set to truthy' do
+        let(:should_force) { :force }
+
+        it 'does not remove the associated records' do
+          expect { subject }.not_to change { Meerkat.count }
+        end
+
+        it 'removes the entry from the join table' do
+          expect { subject }.to change { meerkat.holes.count }.by(-1)
+        end
+      end
+    end
   end
 
   describe '#revive' do
@@ -343,6 +366,12 @@ describe PermanentRecords do
             expect(Difficulty.find_by_id(subject.difficulty.id)).to eq(difficulty)
           end
         end
+      end
+    end
+
+    context 'with habtm association' do
+      it 'does not change entries from the join table' do
+        expect { subject }.not_to change { meerkat.holes.count }
       end
     end
   end

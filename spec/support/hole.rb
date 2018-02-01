@@ -13,6 +13,7 @@ class Hole < ActiveRecord::Base
   has_one :unused_model, dependent: :destroy
   has_one :difficulty, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_and_belongs_to_many :meerkats
 
   has_many :poly_ants, class_name: 'Ant', dependent: :destroy, as: :any_hole
 

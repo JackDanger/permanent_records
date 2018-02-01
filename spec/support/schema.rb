@@ -56,6 +56,15 @@ ActiveRecord::Schema.define(version: 1) do
     t.datetime :deleted_at
   end
 
+  create_table :holes_meerkats, force: true do |t|
+    t.references :hole
+    t.references :meerkat
+  end
+
+  create_table :meerkats, force: true do |t|
+    t.string :name
+  end
+
   create_table :dirts, force: true do |t|
     t.string :color
     t.datetime :deleted_at

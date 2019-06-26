@@ -2,6 +2,7 @@
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
+require 'pathname'
 lib = Pathname.new(
   File.expand_path('../../lib', File.dirname(__FILE__))
 )

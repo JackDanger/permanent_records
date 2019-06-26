@@ -27,12 +27,12 @@ EOS
   ver = ENV['AR_TEST_VERSION']
   ver = ver.dup.chomp if ver
 
-  s.add_runtime_dependency('activerecord',  ver || '>= 4.2.0')
-  s.add_runtime_dependency('activesupport', ver || '>= 4.2.0')
-  s.add_development_dependency('database_cleaner', '>= 1.5.1')
-  s.add_development_dependency('pry-byebug')
-  s.add_development_dependency('rake') # For Travis-ci
-  s.add_development_dependency('rspec', '~> 3.5.0')
-  s.add_development_dependency('rubocop', '0.42.0')
-  s.add_development_dependency('sqlite3')
+  s.add_runtime_dependency 'activerecord',  ver || '>= 4.2.0'
+  s.add_runtime_dependency 'activesupport', ver || '>= 4.2.0'
+  s.add_development_dependency 'database_cleaner', '>= 1.5.1'
+  s.add_development_dependency 'pry-byebug'
+  s.add_development_dependency 'rake' # For Travis-ci
+  s.add_development_dependency 'rspec', '>= 3.5.0'
+  s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'sqlite3'
 end

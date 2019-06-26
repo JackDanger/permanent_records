@@ -13,6 +13,7 @@ $LOAD_PATH.unshift lib
 $LOAD_PATH.unshift support
 RAILS_ROOT = File.dirname(__FILE__)
 
+require 'sqlite3'
 require 'active_record'
 require 'active_support'
 require 'permanent_records'

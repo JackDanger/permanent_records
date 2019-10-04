@@ -138,9 +138,9 @@ module PermanentRecords
     def add_record_window(_request, name, reflection)
       send(name).unscope(where: :deleted_at).where(
         [
-          "#{reflection.quoted_table_name}.deleted_at > ?" \
+          "'#{reflection.table_name}'.deleted_at > ?" \
           ' AND ' \
-          "#{reflection.quoted_table_name}.deleted_at < ?",
+          "'#{reflection.table_name}'.deleted_at < ?",
           deleted_at - PermanentRecords.dependent_record_window,
           deleted_at + PermanentRecords.dependent_record_window
         ]

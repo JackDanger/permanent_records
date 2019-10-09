@@ -23,9 +23,7 @@ module Rails
   end
 end
 
-if I18n.config.respond_to?(:enforce_available_locales)
-  I18n.config.enforce_available_locales = true
-end
+I18n.config.enforce_available_locales = true if I18n.config.respond_to?(:enforce_available_locales)
 
 require 'logger'
 ActiveRecord::Base.logger = Logger.new support.join('debug.log')

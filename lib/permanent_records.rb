@@ -81,9 +81,9 @@ module PermanentRecords
     end
 
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Lint/RescueWithoutErrorClass
     def set_deleted_at(value, force = nil)
       return self unless is_permanent?
+
       record = get_deleted_record
       record.deleted_at = value
       begin
@@ -98,14 +98,14 @@ module PermanentRecords
         end
 
         @attributes = record.instance_variable_get('@attributes')
-      rescue => e
+      rescue StandardError => e
         # trigger dependent record destruction (they were revived before this
         # record, which cannot be revived due to validations)
         record.destroy
         raise e
       end
     end
-    # rubocop:enable Lint/RescueWithoutErrorClass
+
     # rubocop:enable Metrics/MethodLength
 
     def each_counter_cache
@@ -152,9 +152,7 @@ module PermanentRecords
       )
     end
 
-    # TODO: Feel free to refactor this without polluting the ActiveRecord
-    # namespace.
-    # rubocop:disable Metrics/AbcSize
+    # TODO: Feel free to refactor this without polluting the ActiveRecord namespace.
     def revive_destroyed_dependent_records(force = nil)
       destroyed_dependent_relations.each do |relation|
         relation.to_a.each { |destroyed_dependent_record| destroyed_dependent_record.try(:revive, force) }
@@ -194,6 +192,7 @@ module PermanentRecords
                       .reduce({}) do |records, (key, _)|
         found = Array(send(key)).compact
         next records if found.empty?
+
         records.update found.first.class => found.map(&:id)
       end
     end
@@ -218,6 +217,7 @@ module PermanentRecords
         ids.each do |id|
           record = klass.unscoped.where(klass.primary_key => id).first
           next unless record
+
           record.deleted_at = nil
           record.destroy(:force)
         end

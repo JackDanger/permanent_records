@@ -403,3 +403,4 @@ describe PermanentRecords do
     end
   end
 end
+# rubocop:enable Performance/TimesMap

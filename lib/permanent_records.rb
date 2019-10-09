@@ -232,7 +232,7 @@ module PermanentRecords
   # Included into ActiveRecord for all models
   module IsPermanent
     def is_permanent? # rubocop:disable Style/PredicateName
-      columns.detect { |c| 'deleted_at' == c.name }
+      columns.detect { |c| c.name == 'deleted_at' }
     end
   end
 
@@ -240,16 +240,16 @@ module PermanentRecords
     if force.is_a?(Hash)
       force[:force]
     else
-      :force == force
+      force == :force
     end
   end
 
   def self.should_revive_parent_first?(order)
-    order.is_a?(Hash) && true == order[:reverse]
+    order.is_a?(Hash) && order[:reverse] == true
   end
 
   def self.should_ignore_validations?(force)
-    force.is_a?(Hash) && false == force[:validate]
+    force.is_a?(Hash) && force[:validate] == false
   end
 
   def self.dependent_record_window

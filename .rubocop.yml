@@ -3,6 +3,9 @@ AllCops:
     - bin/*
   TargetRubyVersion: 2.0
 
+Metrics/BlockLength:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 120
 

@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - bin/*
+  TargetRubyVersion: 2.0
 
 Metrics/LineLength:
   Max: 120

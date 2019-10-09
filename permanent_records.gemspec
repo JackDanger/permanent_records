@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
                'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold',
                'Hugh Evans', 'Sergey Gnuskov', 'aq', 'Joel AZEMAR']
   s.summary = 'Soft-delete your ActiveRecord records'
-  s.description = <<-EOS
+  s.description = <<-DESCRIPTION
 Never Lose Data. Rather than deleting rows this sets Record#deleted_at and
 gives you all the scopes you need to work with your data.
-EOS
+DESCRIPTION
   s.email = 'github@jackcanty.com'
   s.extra_rdoc_files = [
     'LICENSE',

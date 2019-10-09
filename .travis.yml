@@ -1,8 +1,8 @@
 language: ruby
 rvm:
-  - 2.0.0
-  - 2.2.2
-  - 2.3.0
+  - 2.0.0-p648
+  - 2.2.10
+  - 2.3.8
 env:
   - AR_TEST_VERSION: 4.2.0
-  - AR_TEST_VERSION: 4.2.5
+  - AR_TEST_VERSION: 4.2.11.1

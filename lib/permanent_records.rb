@@ -22,7 +22,7 @@ module PermanentRecords
       end
     end
 
-    def is_permanent? # rubocop:disable Style/PredicateName
+    def is_permanent? # rubocop:disable Naming/PredicateName
       respond_to?(:deleted_at)
     end
 
@@ -76,11 +76,12 @@ module PermanentRecords
       ]
     end
 
-    def get_deleted_record # rubocop:disable Style/AccessorMethodName
+    def get_deleted_record # rubocop:disable Naming/AccessorMethodName
       self.class.unscoped.find(id)
     end
 
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Lint/RescueWithoutErrorClass
     def set_deleted_at(value, force = nil)
       return self unless is_permanent?
       record = get_deleted_record
@@ -104,6 +105,8 @@ module PermanentRecords
         raise e
       end
     end
+    # rubocop:enable Lint/RescueWithoutErrorClass
+    # rubocop:enable Metrics/MethodLength
 
     def each_counter_cache
       _reflections.each do |name, reflection|
@@ -119,6 +122,7 @@ module PermanentRecords
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def destroy_with_permanent_records(force = nil)
       run_callbacks(:destroy) do
         if deleted? || new_record?
@@ -134,6 +138,7 @@ module PermanentRecords
       end
       deleted? ? self : false
     end
+    # rubocop:enable Metrics/MethodLength
 
     def add_record_window(_request, name, reflection)
       send(name).unscope(where: :deleted_at).where(
@@ -157,6 +162,7 @@ module PermanentRecords
       reload
     end
 
+    # rubocop:disable Metrics/MethodLength
     def destroyed_dependent_relations
       PermanentRecords.dependent_permanent_reflections(self.class).map do |name, relation|
         cardinality = relation.macro.to_s.gsub('has_', '').to_sym
@@ -172,6 +178,7 @@ module PermanentRecords
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def attempt_notifying_observers(callback)
       notify_observers(callback)
@@ -231,8 +238,8 @@ module PermanentRecords
 
   # Included into ActiveRecord for all models
   module IsPermanent
-    def is_permanent? # rubocop:disable Style/PredicateName
-      columns.detect { |c| 'deleted_at' == c.name }
+    def is_permanent? # rubocop:disable Naming/PredicateName
+      columns.detect { |c| c.name == 'deleted_at' }
     end
   end
 
@@ -240,16 +247,16 @@ module PermanentRecords
     if force.is_a?(Hash)
       force[:force]
     else
-      :force == force
+      force == :force
     end
   end
 
   def self.should_revive_parent_first?(order)
-    order.is_a?(Hash) && true == order[:reverse]
+    order.is_a?(Hash) && order[:reverse] == true
   end
 
   def self.should_ignore_validations?(force)
-    force.is_a?(Hash) && false == force[:validate]
+    force.is_a?(Hash) && force[:validate] == false
   end
 
   def self.dependent_record_window

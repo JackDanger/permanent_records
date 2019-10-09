@@ -37,7 +37,7 @@ task :pandoc do
   system('pandoc -s -r markdown -w rst README.md -o README.rst')
 end
 
-task publish: [:pandoc, :rubocop, :rspec] do
+task publish: %i[pandoc rubocop rspec] do
   # Ensure the gem builds
   system('gem build permanent_records.gemspec') &&
     # And we didn't leave anything (aside from the gem) uncommitted
@@ -46,4 +46,4 @@ task publish: [:pandoc, :rubocop, :rspec] do
     system("gem push permanent_records-#{version}.gem")
 end
 
-task default: [:rspec, :rubocop]
+task default: %i[rspec rubocop]

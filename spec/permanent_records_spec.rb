@@ -135,7 +135,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_raise(ActiveRecord::RecordNotDestroyed)
               end
               it('') { expect { subject }.not_to change(Muskrat, :count) }
               it('') { expect { subject }.not_to change(Comment, :count) }
@@ -163,7 +163,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_raise(ActiveRecord::RecordNotDestroyed)
               end
               it('') { expect { subject }.not_to change(Muskrat, :count) }
               it('') { expect { subject }.not_to change(Location, :count) }
@@ -190,7 +190,7 @@ describe PermanentRecords do
 
             context 'when error occurs' do
               before do
-                allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
+                allow_any_instance_of(Difficulty).to receive(:destroy).and_raise(ActiveRecord::RecordNotDestroyed)
               end
               it('') { expect { subject }.not_to change(Dirt, :count) }
             end

@@ -26,8 +26,8 @@ Gem::Specification.new do |s|
   ver = ENV['AR_TEST_VERSION']
   ver = ver.dup.chomp if ver
 
-  s.add_runtime_dependency 'activerecord',  ver || '>= 4.2.0'
-  s.add_runtime_dependency 'activesupport', ver || '>= 4.2.0'
+  s.add_runtime_dependency 'activerecord',  ver || '>= 5.0.0'
+  s.add_runtime_dependency 'activesupport', ver || '>= 5.0.0'
   s.add_development_dependency 'database_cleaner', '>= 1.5.1'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rake' # For Travis-ci

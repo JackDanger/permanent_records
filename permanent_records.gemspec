@@ -34,5 +34,5 @@ EOS
   s.add_development_dependency 'rake' # For Travis-ci
   s.add_development_dependency 'rspec', '>= 3.5.0'
   s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'sqlite3', '~> 1.3.6' # freeze to ensure specs are working
 end

@@ -163,15 +163,14 @@ module PermanentRecords
     # rubocop:disable Metrics/MethodLength
     def destroyed_dependent_relations
       PermanentRecords.dependent_permanent_reflections(self.class).map do |name, relation|
-        cardinality = relation.macro.to_s.gsub('has_', '').to_sym
-        case cardinality
-        when :many
+        case relation.macro.to_sym
+        when :has_many
           if deleted_at
             add_record_window(send(name), name, relation)
           else
             send(name).unscope(where: :deleted_at)
           end
-        when :one, :belongs_to
+        when :has_one, :belongs_to
           self.class.unscoped { Array(send(name)) }
         end
       end

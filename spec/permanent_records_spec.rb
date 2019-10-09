@@ -32,7 +32,7 @@ describe PermanentRecords do
     end
 
     it 'does not really remove the record' do
-      expect { subject }.to_not change { record.class.count }
+      expect { subject }.to_not change(record.class, :count)
     end
 
     it 'handles serialized attributes correctly' do
@@ -85,7 +85,7 @@ describe PermanentRecords do
       end
 
       it 'does not set deleted_at' do
-        expect { subject }.not_to change { record.deleted_at }
+        expect { subject }.not_to change(record, :deleted_at)
       end
 
       context 'and using the !' do
@@ -112,7 +112,7 @@ describe PermanentRecords do
     context 'with dependent records' do
       context 'that are permanent' do
         it '' do
-          expect { subject }.to_not change { Muskrat.count }
+          expect { subject }.to_not change(Muskrat, :count)
         end
 
         context 'with has_many cardinality' do
@@ -137,8 +137,8 @@ describe PermanentRecords do
               before do
                 allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
-              it('') { expect { subject }.not_to change { Muskrat.count } }
-              it('') { expect { subject }.not_to change { Comment.count } }
+              it('') { expect { subject }.not_to change(Muskrat, :count) }
+              it('') { expect { subject }.not_to change(Comment, :count) }
             end
           end
         end
@@ -165,8 +165,8 @@ describe PermanentRecords do
               before do
                 allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
-              it('') { expect { subject }.not_to change { Muskrat.count } }
-              it('') { expect { subject }.not_to change { Location.count } }
+              it('') { expect { subject }.not_to change(Muskrat, :count) }
+              it('') { expect { subject }.not_to change(Location, :count) }
             end
           end
         end
@@ -192,7 +192,7 @@ describe PermanentRecords do
               before do
                 allow_any_instance_of(Difficulty).to receive(:destroy).and_return(false)
               end
-              it('') { expect { subject }.not_to change { Dirt.count } }
+              it('') { expect { subject }.not_to change(Dirt, :count) }
             end
           end
         end
@@ -226,18 +226,18 @@ describe PermanentRecords do
 
     context 'with habtm association' do
       it 'does not remove the associated records' do
-        expect { subject }.not_to change { Meerkat.count }
+        expect { subject }.not_to change(Muskrat, :count)
       end
 
       it 'does not remove the entry from the join table' do
-        expect { subject }.not_to change { meerkat.holes.count }
+        expect { subject }.not_to change(meerkat.holes, :count)
       end
 
       context 'with force argument set to truthy' do
         let(:should_force) { :force }
 
         it 'does not remove the associated records' do
-          expect { subject }.not_to change { Meerkat.count }
+          expect { subject }.not_to change(Meerkat, :count)
         end
 
         it 'removes the entry from the join table' do
@@ -289,13 +289,13 @@ describe PermanentRecords do
     context 'with dependent records' do
       context 'that are permanent' do
         it '' do
-          expect { subject }.to_not change { Muskrat.count }
+          expect { subject }.to_not change(Muskrat, :count)
         end
 
         context 'that were deleted previously' do
           before { muskrat.update_attributes! deleted_at: 2.minutes.ago }
           it 'does not restore' do
-            expect { subject }.to_not change { muskrat.deleted? }
+            expect { subject }.to_not change(muskrat, :deleted?)
           end
         end
 
@@ -342,7 +342,7 @@ describe PermanentRecords do
 
       context 'that are non-permanent' do
         it 'cannot revive them' do
-          expect { subject }.to_not change { Mole.count }
+          expect { subject }.to_not change(Mole, :count)
         end
       end
 
@@ -371,7 +371,7 @@ describe PermanentRecords do
 
     context 'with habtm association' do
       it 'does not change entries from the join table' do
-        expect { subject }.not_to change { meerkat.holes.count }
+        expect { subject }.not_to change(meerkat.holes, :count)
       end
     end
   end

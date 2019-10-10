@@ -276,4 +276,9 @@ end
 
 ActiveSupport.on_load(:active_record) do
   ActiveRecord::Base.send :include, PermanentRecords::ActiveRecord
+
+  if [ActiveRecord::VERSION::MAJOR, ActiveRecord::VERSION::MINOR] == [5, 2] ||
+    ActiveRecord::VERSION::MAJOR > 5
+   require 'permanent_records/active_record_5_2'
+ end
 end

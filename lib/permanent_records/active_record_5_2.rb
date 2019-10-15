@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/AbcSize
 # Support destroy for rails belongs_to assocations.
 module HandlePermanentRecordsDestroyedInBelongsToAssociation
   def handle_dependency
@@ -13,6 +14,8 @@ module HandlePermanentRecordsDestroyedInBelongsToAssociation
   end
 end
 
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/CyclomaticComplexity
 # Support destroy for rails 5.2. has_on associations.
 module HandlePermanentRecordsDestroyedInHasOneAssociation
   def delete(method = options[:dependent])
@@ -30,6 +33,8 @@ module HandlePermanentRecordsDestroyedInHasOneAssociation
     end
   end
 end
-
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
 ActiveRecord::Associations::BelongsToAssociation.prepend(HandlePermanentRecordsDestroyedInBelongsToAssociation)
 ActiveRecord::Associations::HasOneAssociation.prepend(HandlePermanentRecordsDestroyedInHasOneAssociation)

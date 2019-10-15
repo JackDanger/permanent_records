@@ -34,5 +34,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '>= 3.5.0'
   s.add_development_dependency 'rubocop', '~> 0.68.0' # freeze to ensure ruby 2.2 compatibility
   s.add_development_dependency 'rubocop-performance'
-  s.add_development_dependency 'sqlite3', '~> 1.3.6' # freeze to ensure specs are working
+  s.add_development_dependency 'sqlite3', '~> 1.3.13' # freeze to ensure specs are working
 end

@@ -1,3 +1,4 @@
+# Support destroy for rails belongs_to assocations.
 module HandlePermanentRecordsDestroyedInBelongsToAssociation
   def handle_dependency
     return unless load_target
@@ -12,6 +13,7 @@ module HandlePermanentRecordsDestroyedInBelongsToAssociation
   end
 end
 
+# Support destroy for rails 5.2. has_on associations.
 module HandlePermanentRecordsDestroyedInHasOneAssociation
   def delete(method = options[:dependent])
     return unless load_target

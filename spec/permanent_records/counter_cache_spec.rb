@@ -15,7 +15,7 @@ describe PermanentRecords do
     end
 
     it 'decrements counter_cache after destroying ant' do
-      expect(hole.reload.ants_count).to eq 0
+      expect(hole.reload.ants_count).to eq(0)
     end
 
     context 'revive' do
@@ -24,7 +24,7 @@ describe PermanentRecords do
       end
 
       it 'increment counter_cache after reviving ant' do
-        expect(hole.reload.ants_count).to eq 1
+        expect(hole.reload.ants_count).to eq(1)
       end
     end
   end
@@ -40,7 +40,7 @@ describe PermanentRecords do
       end
 
       it 'increments counter_cache after creating new ant' do
-        expect(hole.ants_count).to eq 2
+        expect(hole.ants_count).to eq(2)
       end
     end
 
@@ -50,7 +50,7 @@ describe PermanentRecords do
       end
 
       it 'decrements counter_cache after destroying ant' do
-        expect(hole.reload.ants_count).to eq 0
+        expect(hole.reload.ants_count).to eq(0)
       end
 
       context 'revive' do
@@ -59,7 +59,7 @@ describe PermanentRecords do
         end
 
         it 'increment counter_cache after reviving ant' do
-          expect(hole.reload.ants_count).to eq 1
+          expect(hole.reload.ants_count).to eq(1)
         end
       end
     end

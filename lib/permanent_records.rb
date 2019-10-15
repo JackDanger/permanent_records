@@ -51,7 +51,7 @@ module PermanentRecords
         if !is_permanent? || PermanentRecords.should_force_destroy?(force)
           permanently_delete_records_after { super() }
         else
-          destroy_with_permanent_records force
+          destroy_with_permanent_records(force)
         end
       end
     end
@@ -68,7 +68,7 @@ module PermanentRecords
             set_deleted_at(nil, validate)
             # increment all associated counters for counter cache
             each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
-              assoc_class.increment_counter counter_cache_column, assoc_id
+              assoc_class.increment_counter(counter_cache_column, assoc_id)
             end
             true
           end
@@ -116,9 +116,7 @@ module PermanentRecords
 
         associated_class = association.class
 
-        yield(associated_class,
-              reflection.counter_cache_column,
-              send(reflection.foreign_key))
+        yield(associated_class, reflection.counter_cache_column, send(reflection.foreign_key))
       end
     end
 
@@ -131,7 +129,7 @@ module PermanentRecords
           set_deleted_at(Time.now, force)
           # decrement all associated counters for counter cache
           each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
-            assoc_class.decrement_counter counter_cache_column, assoc_id
+            assoc_class.decrement_counter(counter_cache_column, assoc_id)
           end
         end
         true
@@ -281,5 +279,5 @@ module PermanentRecords
 end
 
 ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Base.send :include, PermanentRecords::ActiveRecord
+  ActiveRecord::Base.send(:include, PermanentRecords::ActiveRecord)
 end

@@ -17,7 +17,7 @@ describe PermanentRecords do
     let(:record)       { hole    }
     let(:should_force) { false   }
 
-    subject { record.destroy should_force }
+    subject { record.destroy(should_force) }
 
     it 'returns the record' do
       expect(subject).to eq(record)

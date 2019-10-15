@@ -5,7 +5,7 @@ describe PermanentRecords do
   let(:dirt)     { Dirt.create(hole: hole) }
   let(:location) { Location.create(name: 'location', hole: hole) }
   let!(:zone) do
-    location.zones.create name: 'zone', parent_id: location.id
+    location.zones.create(name: 'zone', parent_id: location.id)
   end
 
   describe '#revive' do

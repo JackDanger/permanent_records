@@ -51,7 +51,7 @@ module PermanentRecords
         if !is_permanent? || PermanentRecords.should_force_destroy?(force)
           permanently_delete_records_after { super() }
         else
-          destroy_with_permanent_records force
+          destroy_with_permanent_records(force)
         end
       end
     end
@@ -68,7 +68,7 @@ module PermanentRecords
             set_deleted_at(nil, validate)
             # increment all associated counters for counter cache
             each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
-              assoc_class.increment_counter counter_cache_column, assoc_id
+              assoc_class.increment_counter(counter_cache_column, assoc_id)
             end
             true
           end
@@ -81,9 +81,9 @@ module PermanentRecords
     end
 
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Lint/RescueWithoutErrorClass
     def set_deleted_at(value, force = nil)
       return self unless is_permanent?
+
       record = get_deleted_record
       record.deleted_at = value
       begin
@@ -98,14 +98,14 @@ module PermanentRecords
         end
 
         @attributes = record.instance_variable_get('@attributes')
-      rescue => e
+      rescue StandardError => e
         # trigger dependent record destruction (they were revived before this
         # record, which cannot be revived due to validations)
         record.destroy
         raise e
       end
     end
-    # rubocop:enable Lint/RescueWithoutErrorClass
+
     # rubocop:enable Metrics/MethodLength
 
     def each_counter_cache
@@ -116,9 +116,7 @@ module PermanentRecords
 
         associated_class = association.class
 
-        yield(associated_class,
-              reflection.counter_cache_column,
-              send(reflection.foreign_key))
+        yield(associated_class, reflection.counter_cache_column, send(reflection.foreign_key))
       end
     end
 
@@ -131,7 +129,7 @@ module PermanentRecords
           set_deleted_at(Time.now, force)
           # decrement all associated counters for counter cache
           each_counter_cache do |assoc_class, counter_cache_column, assoc_id|
-            assoc_class.decrement_counter counter_cache_column, assoc_id
+            assoc_class.decrement_counter(counter_cache_column, assoc_id)
           end
         end
         true
@@ -143,18 +141,16 @@ module PermanentRecords
     def add_record_window(_request, name, reflection)
       send(name).unscope(where: :deleted_at).where(
         [
-          "#{reflection.quoted_table_name}.deleted_at > ?" \
+          "#{reflection.klass.quoted_table_name}.deleted_at > ?" \
           ' AND ' \
-          "#{reflection.quoted_table_name}.deleted_at < ?",
+          "#{reflection.klass.quoted_table_name}.deleted_at < ?",
           deleted_at - PermanentRecords.dependent_record_window,
           deleted_at + PermanentRecords.dependent_record_window
         ]
       )
     end
 
-    # TODO: Feel free to refactor this without polluting the ActiveRecord
-    # namespace.
-    # rubocop:disable Metrics/AbcSize
+    # TODO: Feel free to refactor this without polluting the ActiveRecord namespace.
     def revive_destroyed_dependent_records(force = nil)
       destroyed_dependent_relations.each do |relation|
         relation.to_a.each { |destroyed_dependent_record| destroyed_dependent_record.try(:revive, force) }
@@ -165,15 +161,14 @@ module PermanentRecords
     # rubocop:disable Metrics/MethodLength
     def destroyed_dependent_relations
       PermanentRecords.dependent_permanent_reflections(self.class).map do |name, relation|
-        cardinality = relation.macro.to_s.gsub('has_', '').to_sym
-        case cardinality
-        when :many
+        case relation.macro.to_sym
+        when :has_many
           if deleted_at
             add_record_window(send(name), name, relation)
           else
             send(name).unscope(where: :deleted_at)
           end
-        when :one, :belongs_to
+        when :has_one, :belongs_to
           self.class.unscoped { Array(send(name)) }
         end
       end
@@ -194,6 +189,7 @@ module PermanentRecords
                       .reduce({}) do |records, (key, _)|
         found = Array(send(key)).compact
         next records if found.empty?
+
         records.update found.first.class => found.map(&:id)
       end
     end
@@ -218,6 +214,7 @@ module PermanentRecords
         ids.each do |id|
           record = klass.unscoped.where(klass.primary_key => id).first
           next unless record
+
           record.deleted_at = nil
           record.destroy(:force)
         end
@@ -282,5 +279,9 @@ module PermanentRecords
 end
 
 ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Base.send :include, PermanentRecords::ActiveRecord
+  ActiveRecord::Base.send(:include, PermanentRecords::ActiveRecord)
+
+  if [ActiveRecord::VERSION::MAJOR, ActiveRecord::VERSION::MINOR] == [5, 2] || ActiveRecord::VERSION::MAJOR > 5
+    require 'permanent_records/active_record_5_2'
+  end
 end

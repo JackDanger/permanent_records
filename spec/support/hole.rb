@@ -27,6 +27,6 @@ class Hole < ActiveRecord::Base
   private
 
   def check_youre_not_in_the_hole
-    !youre_in_the_hole
+    throw(:abort) if youre_in_the_hole
   end
 end

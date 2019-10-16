@@ -1,4 +1,4 @@
-PermanentRecords (Rails 3.1+)
+PermanentRecords (Rails 5)
 =============================
 
 http://github.com/JackDanger/permanent_records/

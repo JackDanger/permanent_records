@@ -1,16 +1,16 @@
 test:
-  :adapter: sqlite3
-  :database: ":memory:"
-  :min_messages: ERROR
+  adapter: sqlite3
+  database: ":memory:"
+  min_messages: ERROR
 # sqlite:
-#   :adapter: sqlite
-#   :database: plugin.sqlite.db
+#   adapter: sqlite
+#   database: plugin.sqlite.db
 # sqlite3:
-#   :adapter: sqlite3
-#   :database: ":memory:"
+#   adapter: sqlite3
+#   database: ":memory:"
 # mysql:
-#   :adapter: mysql
-#   :host: localhost
-#   :username: rails
-#   :password:
-#   :database: plugin_test
+#   adapter: mysql
+#   host: localhost
+#   username: rails
+#   password:
+#   database: plugin_test

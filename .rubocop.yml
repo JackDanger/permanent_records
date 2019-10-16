@@ -1,6 +1,14 @@
+require: rubocop-performance
+
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
     - bin/*
+  TargetRubyVersion: 2.2
+
+Metrics/BlockLength:
+  Enabled: false
 
 Metrics/LineLength:
   Max: 120

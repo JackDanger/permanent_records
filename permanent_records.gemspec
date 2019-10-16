@@ -1,4 +1,3 @@
-# encoding: utf-8
 Gem::Specification.new do |s|
   s.name = 'permanent_records'
   s.version = File.read('VERSION')
@@ -8,10 +7,10 @@ Gem::Specification.new do |s|
                'Trond Arve Nordheim', 'Josh Teneycke', 'Maximilian Herold',
                'Hugh Evans', 'Sergey Gnuskov', 'aq', 'Joel AZEMAR']
   s.summary = 'Soft-delete your ActiveRecord records'
-  s.description = <<-EOS
-Never Lose Data. Rather than deleting rows this sets Record#deleted_at and
-gives you all the scopes you need to work with your data.
-EOS
+  s.description = <<-DESCRIPTION
+    Never Lose Data. Rather than deleting rows this sets Record#deleted_at and
+    gives you all the scopes you need to work with your data.
+  DESCRIPTION
   s.email = 'github@jackcanty.com'
   s.extra_rdoc_files = [
     'LICENSE',
@@ -27,12 +26,13 @@ EOS
   ver = ENV['AR_TEST_VERSION']
   ver = ver.dup.chomp if ver
 
-  s.add_runtime_dependency 'activerecord',  ver || '>= 4.2.0'
-  s.add_runtime_dependency 'activesupport', ver || '>= 4.2.0'
+  s.add_runtime_dependency 'activerecord',  ver || '>= 5.0.0'
+  s.add_runtime_dependency 'activesupport', ver || '>= 5.0.0'
   s.add_development_dependency 'database_cleaner', '>= 1.5.1'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rake' # For Travis-ci
   s.add_development_dependency 'rspec', '>= 3.5.0'
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'rubocop', '~> 0.68.0' # freeze to ensure ruby 2.2 compatibility
+  s.add_development_dependency 'rubocop-performance'
+  s.add_development_dependency 'sqlite3', '~> 1.3.13' # freeze to ensure specs are working
 end

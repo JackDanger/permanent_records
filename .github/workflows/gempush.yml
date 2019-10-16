@@ -26,3 +26,4 @@ jobs:
         bin/gempush-if-changed
       env:
         GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_AUTH_TOKEN}}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

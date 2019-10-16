@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -x
+if git diff --name-only HEAD..HEAD^ | egrep -q '^VERSION$'; then
+  # The VERSION file changed in the last commit, build the gem and push
+  gem build *.gemspec
+  gem push *.gem
+fi

@@ -293,7 +293,7 @@ describe PermanentRecords do
         end
 
         context 'that were deleted previously' do
-          before { muskrat.update_attributes! deleted_at: 2.minutes.ago }
+          before { muskrat.update_attribute :deleted_at, 2.minutes.ago }
           it 'does not restore' do
             expect { subject }.to_not change(muskrat, :deleted?)
           end

@@ -13,8 +13,18 @@ ActiveRecord::Schema.define(version: 1) do
     t.references :hole
   end
 
+  create_table :beds, force: true do |t|
+    t.column :name, :string
+  end
+
   create_table :kitties, force: true do |t|
     t.column :name, :string
+    t.references :bed
+  end
+
+  create_table :beds_kitties, force: true do |t|
+    t.references :kitty
+    t.references :bed
   end
 
   create_table :holes, force: true do |t|

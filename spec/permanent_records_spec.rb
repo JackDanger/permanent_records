@@ -10,7 +10,8 @@ describe PermanentRecords do
   let!(:location)   { hole.create_location                  }
   let!(:difficulty) { hole.create_difficulty                }
   let!(:comments)   { 2.times.map { hole.comments.create! } }
-  let!(:kitty)      { Kitty.create!                         }
+  let!(:bed)        { Bed.create!                           }
+  let!(:kitty)      { Kitty.create!(beds: [bed])               }
   let!(:meerkat)    { Meerkat.create!(holes: [hole])        }
 
   describe '#destroy' do
@@ -94,18 +95,6 @@ describe PermanentRecords do
             record.destroy!
           end.to raise_error(ActiveRecord::RecordNotDestroyed)
         end
-      end
-    end
-
-    context 'when model has no deleted_at column' do
-      let(:record) { kitty }
-
-      it 'really removes the record' do
-        expect { subject }.to change { record.class.count }.by(-1)
-      end
-
-      it 'makes deleted? return true' do
-        expect(subject).to be_deleted
       end
     end
 
@@ -202,6 +191,24 @@ describe PermanentRecords do
         it 'removes them' do
           expect { subject }.to change { Mole.count }.by(-1)
         end
+
+        context 'with has many cardinality' do
+          context 'when model has no deleted_at column' do
+            let(:record) { kitty }
+
+            it 'really removes the record' do
+              expect { subject }.to change { record.class.count }.by(-1)
+            end
+
+            it 'really removes the associations' do
+              expect { subject }.to change { Bed.count }.by(-1)
+            end
+
+            it 'makes deleted? return true' do
+              expect(subject).to be_deleted
+            end
+          end
+        end
       end
 
       context 'as default scope' do
@@ -293,7 +300,7 @@ describe PermanentRecords do
         end
 
         context 'that were deleted previously' do
-          before { muskrat.update_attributes! deleted_at: 2.minutes.ago }
+          before { muskrat.update_attribute :deleted_at, 2.minutes.ago }
           it 'does not restore' do
             expect { subject }.to_not change(muskrat, :deleted?)
           end

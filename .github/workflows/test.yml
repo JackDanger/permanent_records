@@ -25,7 +25,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          architecture: 'x64'
       - run: gem install bundler && bundle && bundle exec rake 
         env:
           AR_TEST_VERSION: ${{ matrix.rails }}

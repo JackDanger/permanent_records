@@ -17,6 +17,8 @@ require 'active_record'
 require 'active_support'
 require 'permanent_records'
 
+require 'sqlite3'
+
 module Rails
   def self.env
     'test'

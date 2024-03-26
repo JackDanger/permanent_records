@@ -1,4 +1,7 @@
-require: rubocop-performance
+require: 
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
 
 inherit_from: .rubocop_todo.yml
 
@@ -19,6 +22,18 @@ Metrics/BlockLength:
 
 Layout/LineLength:
   Max: 120
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
 
 Style/BlockDelimiters:
   Enabled: false

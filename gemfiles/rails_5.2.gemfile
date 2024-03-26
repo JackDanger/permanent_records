@@ -9,6 +9,8 @@ gem "rake"
 gem "rspec", ">= 3.5.0"
 gem "rubocop"
 gem "rubocop-performance"
+gem "rubocop-rake"
+gem "rubocop-rspec"
 gem "sqlite3"
 gem "rails", "5.2.8.1"
 

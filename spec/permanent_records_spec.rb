@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Performance/TimesMap
 require 'spec_helper'
 
@@ -11,8 +13,8 @@ describe PermanentRecords do
   let!(:difficulty) { hole.create_difficulty                }
   let!(:comments)   { 2.times.map { hole.comments.create! } }
   let!(:bed)        { Bed.create!                           }
-  let!(:kitty)      { Kitty.create!(beds: [bed])               }
-  let!(:meerkat)    { Meerkat.create!(holes: [hole])        }
+  let!(:kitty)      { Kitty.create!(beds: [bed]) }
+  let!(:meerkat)    { Meerkat.create!(holes: [hole]) }
 
   describe '#destroy' do
     let(:record)       { hole    }
@@ -363,8 +365,10 @@ describe PermanentRecords do
             end
           end
           it 'revives them' do
-            subject.comments.each { |c| expect(c).not_to be_deleted }
-            subject.comments.each { |c| expect(Comment.find_by_id(c.id)).to eq(c) }
+            subject.comments.each { |c|
+              expect(c).not_to be_deleted
+              expect(Comment.find_by_id(c.id)).to eq(c)
+            }
           end
         end
         context 'with :has_one cardinality' do
@@ -391,7 +395,7 @@ describe PermanentRecords do
 
     context '.not_deleted' do
       it 'counts' do
-        expect(Muskrat.not_deleted.count).to eq(Muskrat.all.reject(&:deleted?).size)
+        expect(Muskrat.not_deleted.count).to eq(Muskrat.all.count { |element| !element.deleted? })
       end
 
       it 'has no deleted records' do
@@ -401,7 +405,7 @@ describe PermanentRecords do
 
     context '.deleted' do
       it 'counts' do
-        expect(Muskrat.deleted.count).to eq(Muskrat.all.select(&:deleted?).size)
+        expect(Muskrat.deleted.count).to eq(Muskrat.all.count(&:deleted?))
       end
 
       it 'has no non-deleted records' do

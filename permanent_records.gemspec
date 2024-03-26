@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gem::Specification.new do |s|
   s.name = 'permanent_records'
   s.version = File.read('VERSION')
@@ -12,10 +14,7 @@ Gem::Specification.new do |s|
     gives you all the scopes you need to work with your data.
   DESCRIPTION
   s.email = 'github@jackcanty.com'
-  s.extra_rdoc_files = [
-    'LICENSE',
-    'README.md'
-  ]
+  s.extra_rdoc_files = %w[LICENSE README.md]
   s.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
@@ -24,15 +23,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.7.8'
 
-  s.add_runtime_dependency 'activerecord', '>= 5.2'
-  s.add_runtime_dependency 'activesupport', '>= 5.2'
-
-  s.add_development_dependency 'appraisal'
-  s.add_development_dependency 'database_cleaner', '>= 1.5.1'
-  s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '>= 3.5.0'
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'rubocop-performance'
-  s.add_development_dependency 'sqlite3'
+  s.add_runtime_dependency 'activerecord', ['>= 5.2', '< 7']
+  s.add_runtime_dependency 'activesupport', ['>= 5.2', '< 7']
 end

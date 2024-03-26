@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Difficulty < ActiveRecord::Base
   belongs_to :hole
 

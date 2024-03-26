@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Earthworm < ActiveRecord::Base
   belongs_to :dirt
   validates :dirt, presence: true

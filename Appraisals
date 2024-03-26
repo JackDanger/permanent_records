@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise 'rails-5.2' do
   gem 'rails', '5.2.8.1'
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/AbcSize
 # Support destroy for rails belongs_to assocations.
 module HandlePermanentRecordsDestroyedInBelongsToAssociation

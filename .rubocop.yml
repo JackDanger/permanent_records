@@ -7,7 +7,12 @@ AllCops:
     - bin/*
     - gemfiles/*
     - vendor/bundle/**/*
+  NewCops: enable
   TargetRubyVersion: 2.7
+
+Gemspec/RequireMFA:
+  Exclude:
+    - 'permanent_records.gemspec'
 
 Metrics/BlockLength:
   Enabled: false

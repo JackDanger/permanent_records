@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class House < ActiveRecord::Base
   has_many :rooms, dependent: :destroy
   validates_associated :rooms

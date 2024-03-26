@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Ant < ActiveRecord::Base
   belongs_to :hole, counter_cache: true
   belongs_to :any_hole, polymorphic: true, counter_cache: true

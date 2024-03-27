@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PermanentRecords do
@@ -8,8 +10,10 @@ describe PermanentRecords do
   before { hole.destroy }
 
   describe '#revive' do
-    it 'should revive parent first' do
-      hole.revive(reverse: true)
+    subject(:revive) { hole.revive(reverse: true) }
+
+    it 'revives parent first' do
+      expect { revive }.not_to raise_error
     end
   end
 end

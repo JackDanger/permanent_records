@@ -1,7 +1,0 @@
-#!/bin/bash
-for version in `grep AR_TEST_VERSION .travis.yml | awk '{print $3}'`; do
-  export AR_TEST_VERSION=$version
-  echo "Testing against ActiveRecord $version"
-  bundle
-  bundle exec rake
-done

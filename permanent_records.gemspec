@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Gem::Specification.new do |s|
   s.name = 'permanent_records'
   s.version = File.read('VERSION')
@@ -12,27 +14,15 @@ Gem::Specification.new do |s|
     gives you all the scopes you need to work with your data.
   DESCRIPTION
   s.email = 'github@jackcanty.com'
-  s.extra_rdoc_files = [
-    'LICENSE',
-    'README.md'
-  ]
+  s.extra_rdoc_files = %w[LICENSE README.md]
   s.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
   s.homepage = 'https://github.com/JackDanger/permanent_records'
   s.require_paths = ['lib']
 
-  # For testing against multiple AR versions
-  ver = ENV['AR_TEST_VERSION']
-  ver = ver.dup.chomp if ver
+  s.required_ruby_version = '>= 2.7.8'
 
-  s.add_runtime_dependency 'activerecord',  ver || '>= 5.0.0'
-  s.add_runtime_dependency 'activesupport', ver || '>= 5.0.0'
-  s.add_development_dependency 'database_cleaner', '>= 1.5.1'
-  s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'rake' # For Travis-ci
-  s.add_development_dependency 'rspec', '>= 3.5.0'
-  s.add_development_dependency 'rubocop', '~> 0.68.0' # freeze to ensure ruby 2.2 compatibility
-  s.add_development_dependency 'rubocop-performance'
-  s.add_development_dependency 'sqlite3', '~> 1.3.13' # freeze to ensure specs are working
+  s.add_runtime_dependency 'activerecord', '>= 5.2'
+  s.add_runtime_dependency 'activesupport', '>= 5.2'
 end

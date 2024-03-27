@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Location < ActiveRecord::Base
   belongs_to :hole
   validates :hole, presence: true, unless: :zone?

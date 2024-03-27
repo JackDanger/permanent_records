@@ -1,4 +1,4 @@
-# PermanentRecords (Rails 5)
+# PermanentRecords
 
 [http://github.com/JackDanger/permanent_records/](http://github.com/JackDanger/permanent_records/)
 

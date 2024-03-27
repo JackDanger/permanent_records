@@ -91,7 +91,7 @@ module PermanentRecords
         # ActiveRecord::RecordInvalid error will be raised if the record isn't
         # valid. (This prevents reviving records that disregard validation
         # constraints,)
-        if PermanentRecords.should_ignore_validations?(force)
+        if PermanentRecords.should_ignore_validations?(force) || value.present?
           record.save(validate: false)
         else
           record.save!

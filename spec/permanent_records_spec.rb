@@ -61,8 +61,8 @@ describe PermanentRecords do
       before do
         allow_any_instance_of(Hole).to receive(:valid?).and_return(false)
       end
-      it 'raises' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      it 'does not raise' do
+        expect { subject }.not_to raise_error(ActiveRecord::RecordInvalid)
       end
 
       context 'with validation opt-out' do
@@ -111,9 +111,9 @@ describe PermanentRecords do
 
           context 'when error occurs' do
             before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
-            it 'does not mark records as deleted' do
-              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.muskrats.not_deleted.count).to eq(1)
+            it 'marks records as deleted' do
+              expect { subject }.not_to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.muskrats.not_deleted.count).to eq(0)
             end
           end
 
@@ -139,9 +139,9 @@ describe PermanentRecords do
 
           context 'when error occurs' do
             before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
-            it('does not mark records as deleted') do
-              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.reload.location).not_to be_deleted
+            it('marks records as deleted') do
+              expect { subject }.not_to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.reload.location).to be_deleted
             end
           end
 
@@ -167,9 +167,9 @@ describe PermanentRecords do
 
           context 'when error occurs' do
             before { allow_any_instance_of(Hole).to receive(:valid?).and_return(false) }
-            it 'does not mark records as deleted' do
-              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
-              expect(record.dirt).not_to be_deleted
+            it 'marks records as deleted' do
+              expect { subject }.not_to raise_error(ActiveRecord::RecordInvalid)
+              expect(record.dirt).to be_deleted
             end
           end
 

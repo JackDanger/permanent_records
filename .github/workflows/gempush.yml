@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+      with:
+        fetch-depth: 2
     - name: Set up Ruby 2.7
       uses: ruby/setup-ruby@v1
       with:

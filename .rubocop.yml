@@ -1,17 +1,39 @@
-require: rubocop-performance
+require: 
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
 
 inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
     - bin/*
-  TargetRubyVersion: 2.2
+    - gemfiles/*
+    - vendor/bundle/**/*
+  NewCops: enable
+  TargetRubyVersion: 2.7
+
+Gemspec/RequireMFA:
+  Exclude:
+    - 'permanent_records.gemspec'
 
 Metrics/BlockLength:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
 
 Style/BlockDelimiters:
   Enabled: false

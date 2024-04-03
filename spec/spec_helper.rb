@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
@@ -32,7 +34,7 @@ ActiveRecord::Base.establish_connection
 
 load 'schema.rb' if File.exist?(support.join('schema.rb'))
 
-Dir.glob(support.join('*.rb')).each do |file|
+Dir.glob(support.join('*.rb')).sort.each do |file|
   autoload File.basename(file).chomp('.rb').camelcase.intern, file
   require file
 end
@@ -45,11 +47,11 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.start
   end
 
-  config.after(:each) do
+  config.after do
     DatabaseCleaner.clean
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PermanentRecords do
@@ -9,7 +11,7 @@ describe PermanentRecords do
   end
 
   describe '#revive' do
-    it 'should revive children properly on STI' do
+    it 'revives children properly on STI' do
       expect {
         hole.destroy
       }.to change {

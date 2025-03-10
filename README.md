@@ -1,3 +1,7 @@
+# Archived
+Repo archived on March 10th 2025
+This fork has been replaced by the official gem on Flywheel and Coyote
+
 # PermanentRecords (Rails 5)
 
 [http://github.com/JackDanger/permanent_records/](http://github.com/JackDanger/permanent_records/)

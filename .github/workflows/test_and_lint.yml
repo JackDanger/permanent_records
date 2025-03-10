@@ -1,0 +1,57 @@
+name: Lint & Test
+
+on: push
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+          - 2.7.8
+          - 3.0.6
+          - 3.1.4
+          - 3.2.3
+        appraisal:
+          - rails-5.2
+          - rails-6.0
+          - rails-6.1
+          - rails-7.0
+          - rails-7.1
+        exclude:
+          - ruby: 3.0.6
+            appraisal: rails-5.2
+          - ruby: 3.1.4
+            appraisal: rails-5.2
+          - ruby: 3.2.3
+            appraisal: rails-5.2
+    steps:
+      - name: Install system dependencies
+        run: sudo apt-get install -y libsqlite3-dev
+      - uses: actions/checkout@master
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install bundle
+        run: bundle
+      - name: Install appraisal
+        run: bundle exec appraisal install
+      - name: Run tests
+        run: bundle exec appraisal ${{ matrix.appraisal }} rspec
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install system dependencies
+        run: sudo apt-get install -y libsqlite3-dev
+      - uses: actions/checkout@master
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.8
+      - name: Install bundle
+        run: bundle
+      - name: Run rubocop
+        run: bundle exec rubocop

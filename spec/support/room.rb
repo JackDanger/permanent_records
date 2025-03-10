@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Room < ActiveRecord::Base
   belongs_to :house
   validates :house, presence: true

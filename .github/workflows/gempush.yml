@@ -12,10 +12,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        fetch-depth: 2
+    - name: Set up Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.8
+
+    - name: Install bundle
+      run: bundle
+    - name: Run rubocop
+      run: bundle exec rubocop
 
     - name: Publish to RubyGems
       run: |

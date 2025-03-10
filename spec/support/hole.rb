@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Hole < ActiveRecord::Base
   # Because when we're destroying a mole hole we're obviously using high
   # explosives.

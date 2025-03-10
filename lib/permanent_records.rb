@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # PermanentRecords works with ActiveRecord to set deleted_at columns with a
 # timestamp reflecting when a record was 'deleted' instead of actually deleting
 # the record. All dependent records and associations are treated exactly as
@@ -28,7 +30,7 @@ module PermanentRecords
 
     def deleted?
       if is_permanent?
-        !!deleted_at # rubocop:disable Style/DoubleNegation
+        !!deleted_at
       else
         destroyed?
       end
@@ -97,7 +99,7 @@ module PermanentRecords
           record.save!
         end
 
-        @attributes = record.instance_variable_get('@attributes')
+        @attributes = record.instance_variable_get(:@attributes)
       rescue StandardError => e
         # trigger dependent record destruction (they were revived before this
         # record, which cannot be revived due to validations)
@@ -141,8 +143,8 @@ module PermanentRecords
     def add_record_window(_request, name, reflection)
       send(name).unscope(where: :deleted_at).where(
         [
-          "#{reflection.klass.quoted_table_name}.deleted_at > ?" \
-          ' AND ' \
+          "#{reflection.klass.quoted_table_name}.deleted_at > ? " \
+          'AND ' \
           "#{reflection.klass.quoted_table_name}.deleted_at < ?",
           deleted_at - PermanentRecords.dependent_record_window,
           deleted_at + PermanentRecords.dependent_record_window
@@ -177,7 +179,7 @@ module PermanentRecords
 
     def attempt_notifying_observers(callback)
       notify_observers(callback)
-    rescue NoMethodError # rubocop:disable Lint/HandleExceptions
+    rescue NoMethodError
       # do nothing: this model isn't being observed
     end
 
@@ -215,7 +217,7 @@ module PermanentRecords
           record = klass.unscoped.where(klass.primary_key => id).first
           next unless record
 
-          record.deleted_at = nil
+          record.deleted_at = nil if record.respond_to?(:deleted_at)
           record.destroy(:force)
         end
       end
@@ -279,9 +281,6 @@ module PermanentRecords
 end
 
 ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Base.send(:include, PermanentRecords::ActiveRecord)
-
-  if [ActiveRecord::VERSION::MAJOR, ActiveRecord::VERSION::MINOR] == [5, 2] || ActiveRecord::VERSION::MAJOR > 5
-    require 'permanent_records/active_record_5_2'
-  end
+  ActiveRecord::Base.include PermanentRecords::ActiveRecord
+  require 'permanent_records/active_record'
 end

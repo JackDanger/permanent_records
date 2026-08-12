@@ -77,9 +77,3 @@ Style/OneClassPerFile:
     - 'spec/**/*'
     - 'test/**/*'
     - 'lib/permanent_records/active_record.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/SuperArguments:
-  Exclude:
-    - 'lib/permanent_records/active_record.rb'

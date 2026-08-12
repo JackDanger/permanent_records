@@ -24,7 +24,7 @@ module PermanentRecords
       end
     end
 
-    def is_permanent? # rubocop:disable Naming/PredicateName
+    def is_permanent? # rubocop:disable Naming/PredicatePrefix
       respond_to?(:deleted_at)
     end
 
@@ -237,7 +237,7 @@ module PermanentRecords
 
   # Included into ActiveRecord for all models
   module IsPermanent
-    def is_permanent? # rubocop:disable Naming/PredicateName
+    def is_permanent? # rubocop:disable Naming/PredicatePrefix
       columns.detect { |c| c.name == 'deleted_at' }
     end
   end

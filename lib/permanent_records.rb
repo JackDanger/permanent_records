@@ -203,7 +203,7 @@ module PermanentRecords
     # soft delete the dependent records; we keep track of the dependent records
     # that have `:dependent => :destroy` and call destroy(force) on them after
     # the call to super
-    def permanently_delete_records_after(&_block)
+    def permanently_delete_records_after(&)
       dependent_records = dependent_record_ids
       result = yield
       permanently_delete_records(dependent_records) if result

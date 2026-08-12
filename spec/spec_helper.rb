@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable
 # Include this file in your test by copying the following line to your test:
 #   require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 

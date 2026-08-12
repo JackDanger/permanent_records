@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/JackDanger/permanent_records'
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '>= 2.7.8'
+  s.required_ruby_version = '>= 3.2.0'
 
-  s.add_dependency 'activerecord', '>= 5.2'
-  s.add_dependency 'activesupport', '>= 5.2'
+  s.add_dependency 'activerecord', '>= 7.1', '< 7.2'
+  s.add_dependency 'activesupport', '>= 7.1', '< 7.2'
 end

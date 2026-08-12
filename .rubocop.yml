@@ -11,7 +11,7 @@ AllCops:
     - gemfiles/*
     - vendor/bundle/**/*
   NewCops: enable
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.2
 
 Gemspec/RequireMFA:
   Exclude:

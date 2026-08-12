@@ -49,7 +49,7 @@ And if you had dependent records that were set to be destroyed along with the pa
 
 ```ruby
 class User < ActiveRecord::Base
-  has_many :comments, :dependent => :destroy
+  has_many :comments, dependent: :destroy
 end
 
 User.find(3).destroy         # All the comments are destroyed as well.
@@ -63,7 +63,7 @@ Forcing deletion works the same way: if you hard delete a record, its dependent 
 ## Can I use default scopes?
 
 ```ruby
-default_scope where(:deleted_at => nil)
+default_scope { where(deleted_at: nil) }
 ```
 
 If you use such a default scope, you will need to simulate the `deleted` scope with a method

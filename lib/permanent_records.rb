@@ -24,7 +24,7 @@ module PermanentRecords
       end
     end
 
-    def is_permanent? # rubocop:disable Naming/PredicateName
+    def is_permanent? # rubocop:disable Naming/PredicatePrefix
       respond_to?(:deleted_at)
     end
 
@@ -203,7 +203,7 @@ module PermanentRecords
     # soft delete the dependent records; we keep track of the dependent records
     # that have `:dependent => :destroy` and call destroy(force) on them after
     # the call to super
-    def permanently_delete_records_after(&_block)
+    def permanently_delete_records_after(&)
       dependent_records = dependent_record_ids
       result = yield
       permanently_delete_records(dependent_records) if result
@@ -237,7 +237,7 @@ module PermanentRecords
 
   # Included into ActiveRecord for all models
   module IsPermanent
-    def is_permanent? # rubocop:disable Naming/PredicateName
+    def is_permanent? # rubocop:disable Naming/PredicatePrefix
       columns.detect { |c| c.name == 'deleted_at' }
     end
   end

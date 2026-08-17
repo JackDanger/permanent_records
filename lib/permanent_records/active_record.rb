@@ -28,7 +28,7 @@ module HandlePermanentRecordsDestroyedInHasOneAssociation
       target.destroy
       throw(:abort) if target.respond_to?(:deleted?) && !target.deleted?
     else
-      super(method)
+      super
     end
   end
 end

@@ -5,6 +5,13 @@
 This gem prevents any of your ActiveRecord data from being destroyed.
 Any model that you've given a "deleted_at" datetime column will have that column set rather than let the record be deleted.
 
+## Requirements
+
+We currently support Ruby >= 3.2 and Rails >= 7.1. 
+See [`.github/workflows/test_and_lint.yml`](.github/workflows/test_and_lint.yml) for the exact Ruby/Rails combinations tested in CI.
+
+If you need older Ruby / Rails versions, pin to `permanent_records ~> 6.0` (Ruby 2.7-3.2 / Rails 5.2-7.1).
+
 ## What methods does it give me?
 
 ```ruby
@@ -49,7 +56,7 @@ And if you had dependent records that were set to be destroyed along with the pa
 
 ```ruby
 class User < ActiveRecord::Base
-  has_many :comments, :dependent => :destroy
+  has_many :comments, dependent: :destroy
 end
 
 User.find(3).destroy         # All the comments are destroyed as well.
@@ -63,7 +70,7 @@ Forcing deletion works the same way: if you hard delete a record, its dependent 
 ## Can I use default scopes?
 
 ```ruby
-default_scope where(:deleted_at => nil)
+default_scope { where(deleted_at: nil) }
 ```
 
 If you use such a default scope, you will need to simulate the `deleted` scope with a method
